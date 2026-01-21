@@ -1,0 +1,222 @@
+/* ==========================================
+   1. FONT & BASE STYLES
+   ========================================== */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&display=swap');
+
+html, body { width: 100%; height: 100%; margin: 0; padding: 0; }
+body { 
+    font-family: 'Inter', sans-serif; 
+    color: #1f2937; 
+    -webkit-font-smoothing: antialiased; 
+    -moz-osx-font-smoothing: grayscale; 
+    position: relative; 
+    background-color: #f8fafc; 
+    overflow-x: hidden; 
+    /* Padding bawah agar konten tidak tertutup nav & footer */
+    padding-bottom: 100px !important; 
+}
+
+/* Background Abstrak */
+body::before, body::after { content: ''; position: fixed; z-index: -1; border-radius: 50%; filter: blur(80px); opacity: 0.15; }
+body::before { width: 300px; height: 300px; top: -100px; left: -100px; background-color: #a7c5ff; }
+body::after { width: 400px; height: 400px; bottom: -150px; right: -150px; background-color: #e0e7ff; }
+
+.main-content { padding-bottom: 20px; }
+.hidden { display: none !important; }
+
+/* ==========================================
+   2. HEADER STYLES
+   ========================================== */
+.dynamic-header { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 1.5rem; background-color: #ffffff; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+.logo-container { flex-shrink: 0; }
+.logo-container img { height: 56px; width: auto; }
+.slider-container {
+    height: 3.5rem; flex-grow: 1; overflow: hidden; position: relative;
+    background-color: transparent;
+    color: #01007f;
+}
+.slider-track { height: 200%; animation: slide-up 10s infinite ease-in-out; }
+.slide {
+    height: 50%; display: flex; align-items: center; justify-content: flex-end;
+    gap: 0.75rem; font-family: 'Poppins', sans-serif; font-weight: 600;
+    font-size: 1rem; padding: 0; text-align: right;
+}
+
+.polyclinic-text { display: flex; flex-direction: column; align-items: flex-end; line-height: 1.2; }
+.polyclinic-text span:first-child { font-weight: 700; font-size: 1.1rem; }
+.hospital-name { font-size: 0.8rem; opacity: 1; font-weight: 600; }
+.slide.emergency-text { color: #D92D20; }
+.emergency-content { display: flex; flex-direction: column; align-items: flex-end; line-height: 1.2; }
+.emergency-number { font-weight: 700; font-size: 1.1rem; }
+.emergency-desc { opacity: 1; font-size: 0.8rem; font-weight: 600; }
+.phone-icon { height: 1.5rem; width: 1.5rem; flex-shrink: 0; }
+
+@keyframes slide-up { 0%, 45% { transform: translateY(0); } 50%, 95% { transform: translateY(-50%); } 100% { transform: translateY(-100%); } }
+
+/* ==========================================
+   3. NAVIGASI TAB (POSISI DI BAWAH / FLOATING PILL)
+   ========================================== */
+.bottom-nav { 
+    position: fixed; 
+    bottom: 50px; /* Mengambang di atas footer copyright */
+    left: 50%; 
+    transform: translateX(-50%); 
+    width: auto; 
+    height: auto; 
+    
+    /* Style Transparan Blur */
+    background-color: rgba(1, 0, 127, 0.9); 
+    backdrop-filter: blur(10px); 
+    -webkit-backdrop-filter: blur(10px); 
+    
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    gap: 8px; 
+    padding: 8px; 
+    border-radius: 9999px; 
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2); 
+    z-index: 100; /* Di atas konten biasa, di bawah modal */
+    transition: all 0.3s ease; 
+}
+
+.nav-item { 
+    padding: 8px 20px; 
+    color: #a9a8ff; 
+    font-size: 0.9rem; 
+    font-weight: 600; 
+    transition: all 0.3s ease; 
+    border-radius: 9999px; 
+    text-decoration: none; 
+    background-color: transparent; 
+    white-space: nowrap;
+}
+
+.nav-item:hover { 
+    color: #ffffff; 
+    background-color: rgba(255, 255, 255, 0.1); 
+}
+
+.nav-item.active { 
+    background-color: #ffffff; 
+    color: #01007f; 
+    font-weight: 700; 
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1); 
+}
+
+/* Reset padding top konten (karena nav sudah di bawah) */
+#home-view, #mcu-view {
+    padding-top: 0; 
+}
+
+/* ==========================================
+   4. KOMPONEN UI LAINNYA
+   ========================================== */
+
+/* Search Bar */
+#searchInput { background-color: #ffffff; font-size: 1rem; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+#searchInput::placeholder { color: #9ca3af; }
+
+/* Judul Section */
+.section-header { display: flex; justify-content: space-between; align-items: center; padding: 0 1.5rem; margin-bottom: 1rem; }
+.section-title { font-size: 1.25rem; font-weight: 700; color: #1f2937; margin: 0; padding: 0; }
+
+/* Card & Ticker */
+.leave-carousel-card { display: flex; align-items: center; gap: 1rem; background-color: #ffffff; padding: 0.75rem; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); min-height: 72px; }
+.leave-carousel-card img { width: 48px; height: 48px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
+.leave-carousel-card-info .name { font-weight: 600; color: #1f2937; line-height: 1.2; }
+.leave-carousel-card-info .status { font-size: clamp(0.65rem, 2.5vw, 0.8rem); color: #4b5563; line-height: 1.3; }
+.leave-carousel-card.on-leave .status { color: #ef4444; }
+
+/* Specialist Grid */
+.specialist-link { display: flex; align-items: center; justify-content: center; padding: 1rem 0.5rem; background-color: #01007f; border-radius: 12px; font-weight: 600; color: #ffffff; font-size: 0.8rem; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.1); transition: all 0.2s ease-in-out; min-height: 80px; }
+.specialist-link:hover { transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.2); filter: brightness(120%); }
+.specialist-link span { line-height: 1.3; }
+
+/* Ticker Animation */
+.ticker-wrap { overflow-y: auto; position: relative; border-radius: 12px; background-color: #ffffff; box-shadow: 0 4px 10px rgba(0,0,0,0.05); scrollbar-width: none; }
+.ticker-wrap::-webkit-scrollbar { display: none; }
+.ticker-track { display: flex; flex-direction: column; gap: 0.75rem; padding: 0.75rem; }
+.poliklinik-item { display: flex; align-items: center; gap: 0.75rem; background-color: #f8fafc; padding: 0.75rem; border-radius: 12px; border: 1px solid #e2e8f0; }
+.poliklinik-item img { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
+.poliklinik-info .name { font-weight: 600; font-size: 0.875rem; color: #1f2937; }
+.poliklinik-info .specialty { font-size: 0.75rem; color: #4b5563; }
+.poliklinik-info .schedule-time { font-size: 0.8rem; font-weight: 700; color: #01007f; margin-top: 4px; }
+
+/* ==========================================
+   5. MODALS & POPUPS
+   ========================================== */
+.modal-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background-color:rgba(0,0,0,.7);display:flex;justify-content:center;align-items:center;z-index:1000}
+.modal-content{background-color:#fff;border-radius:12px;position:relative;max-width:900px;width:90%;max-height:90vh;overflow:hidden;box-shadow:0 5px 15px rgba(0,0,0,.3);color:#1f2937;animation:fadeInScale .3s ease-out}
+.modal-header{position:sticky;top:0;background-color:#0c4a6e;color:#fff;z-index:10;padding:1rem 1.5rem;display:flex;justify-content:space-between;align-items:center}
+.modal-body-container{padding:1.5rem;overflow-y:auto;max-height:calc(90vh - 72px)}
+.close-btn{font-size:2rem;cursor:pointer;line-height:1;color:#fff;opacity:.8;transition:opacity .2s}.close-btn:hover{opacity:1}
+@keyframes fadeInScale{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:scale(1)}}
+
+/* Doctor Card */
+.doctor-card{display:flex;align-items:flex-start;gap:1rem;background-color:#fff;padding:1rem;border-radius:12px;border:1px solid #e2e8f0;box-shadow:0 2px 4px rgba(0,0,0,.05);overflow:hidden;position:relative}.doctor-card .doctor-photo{width:80px;height:80px;flex-shrink:0;border-radius:8px;object-fit:cover}.doctor-card .doctor-info{flex-grow:1}.doctor-card .doctor-name{font-size:1.125rem;font-weight:700;color:#1e293b;margin:0}.doctor-card .doctor-specialty{font-size:.875rem;font-weight:600;color:#01007f;margin-top:2px}.doctor-card .leave-badge{display:inline-block;background-color:#fef2f2;color:#dc2626;font-size:.75rem;font-weight:600;padding:2px 8px;border-radius:9999px;margin-top:8px}.doctor-card .schedule-title{font-size:.875rem;font-weight:600;color:#475569;margin-top:12px;margin-bottom:4px}.doctor-card .schedule-list{list-style:none;padding:0;margin:0;font-size:.875rem;color:#64748b}.doctor-card .share-btn{display:flex;align-items:center;justify-content:center;gap:.5rem;width:100%;margin-top:12px;background-color:#16a34a;color:#fff;border:none;padding:8px 12px;border-radius:8px;font-weight:600;font-size:.875rem;text-decoration:none;transition:background-color .2s}.doctor-card .share-btn:hover{background-color:#15803d}.doctor-card .share-btn svg{width:16px;height:16px}.doctor-card.on-leave{background-color:#f1f5f9}.doctor-card.on-leave .doctor-photo{filter:grayscale(100%)}
+
+/* Loading & Popups */
+.loading-container{position:fixed;top:20px;right:20px;z-index:1001;display:flex;align-items:center;background-color:rgba(255,255,255,.9);padding:10px 15px;border-radius:20px;box-shadow:0 2px 10px rgba(0,0,0,.1)}.loading-spinner{width:20px;height:20px;border:3px solid #f3f3f3;border-top:3px solid #0c4a6e;border-radius:50%;animation:spin 1s linear infinite;margin-right:10px}.loading-text{color:#0c4a6e;font-weight:500;font-size:14px}@keyframes spin{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}
+.health-popup{position:fixed;top:0;left:0;width:100%;height:100%;background-color:rgba(0,0,0,.7);display:flex;justify-content:center;align-items:center;z-index:1000;opacity:0;transition:opacity .3s ease}.health-popup.show{opacity:1}.health-popup-content{width:80%;max-width:400px;overflow:hidden;box-shadow:0 10px 25px rgba(0,0,0,.2);position:relative}.health-popup-header{text-align:right}.health-popup-close{background:0 0;border:none;color:#fff;font-size:30px;cursor:pointer;opacity:.8;transition:opacity .2s;padding:10px;line-height:1}.health-popup-close:hover{opacity:1}.health-popup-body{padding:0 10px 10px;text-align:center}.health-popup-image{max-width:100%;height:auto;border-radius:8px}.mcu-highlight{background-color:#ffd700;color:#c00;font-weight:700;padding:2px 4px;border-radius:4px;white-space:nowrap}
+.skeleton-card{border-radius:12px;background-color:#f1f5f9;padding:1.5rem;display:flex;flex-direction:column;align-items:center}.skeleton{background-color:#e0e0e0;border-radius:4px;animation:pulse-animation 1.5s infinite}
+
+/* ==========================================
+   6. FOOTER STYLES
+   ========================================== */
+.main-footer-section { background-color: #01007f; color: #ffffff; padding: 1.5rem 1rem; padding-bottom: calc(20px + 60px); font-size: 0.875rem; position: relative; z-index: 10; margin-top: auto; }
+.footer-container { max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; justify-content: space-between; gap: 1rem; text-align: center; }
+.footer-left p { margin: 0; opacity: 0.9; }
+.footer-right { display: flex; align-items: center; justify-content: center; gap: 0.75rem; flex-wrap: wrap; }
+.linkedin-link { display: flex; align-items: center; color: #ffffff; transition: all 0.2s ease; }
+.linkedin-link:hover { color: #a7c5ff; transform: scale(1.1); }
+.sticky-copyright-footer { position: fixed; bottom: 0; left: 0; width: 100%; background-color: #01007f; color: #ffffff; z-index: 40; padding: 10px 0; font-family: 'Inter', sans-serif; font-size: 0.75rem; box-shadow: 0 -2px 10px rgba(0,0,0,0.1); }
+.footer-content-wrapper { max-width: 1200px; margin: 0 auto; padding: 0 1.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+.linkedin-icon-link { color: #ffffff; display: flex; align-items: center; transition: transform 0.2s, color 0.2s; }
+.linkedin-icon-link:hover { color: #a7c5ff; transform: scale(1.1); }
+
+/* Tombol WA & GMB */
+/* Diatur agar tidak tertumpuk dengan nav yang sekarang ada di bawah */
+.whatsapp-button { position: fixed; bottom: 100px; right: 20px; z-index: 90; background-color: #25D366; color: white; padding: 0.75rem; border-radius: 9999px; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); transition: all 0.3s ease-in-out; }
+.whatsapp-button:hover { transform: scale(1.05); box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); }
+.gmb-widget { display: none; bottom: 110px !important; }
+
+/* ==========================================
+   7. MEDIA QUERIES (RESPONSIVE)
+   ========================================== */
+@media (max-width: 767px) {
+    .dynamic-header { flex-direction: row; gap: 0.75rem; padding: 0.75rem; }
+    .logo-container { flex-basis: 40%; flex-shrink: 0; }
+    .logo-container img { height: auto; width: 100%; max-width: 100px; }
+    .slider-container { flex-basis: 60%; height: 3rem; background-color: transparent; }
+    .slide { color: #01007f; justify-content: flex-end; font-size: 0.7rem; text-align: right; padding: 0; }
+    .polyclinic-text { align-items: flex-end; }
+    .slide.emergency-text { color: #D92D20; justify-content: flex-end; }
+    .emergency-content { align-items: flex-end; }
+    .emergency-number { font-size: 0.8rem; }
+    .emergency-desc { font-size: 0.6rem; }
+    
+    /* Navigasi Mobile (Di Bawah) */
+    .bottom-nav { 
+        gap: 4px; 
+        padding: 6px; 
+        bottom: 45px; /* Sedikit di atas footer sticky */
+        width: auto; 
+    }
+    
+    .nav-item { padding: 6px 16px; font-size: 0.8rem; }
+    
+    .section-title { font-size: 1.125rem; padding: 0 1rem; }
+    .specialist-link { font-size: 0.75rem; min-height: 70px; }
+    .footer-content-wrapper { flex-direction: column; gap: 5px; text-align: center; }
+}
+
+@media (min-width: 768px) {
+    .main-footer-section { padding-bottom: 1.5rem; }
+    .footer-container { flex-direction: row; text-align: left; }
+    .footer-right { justify-content: flex-end; }
+}
+
+/* Utility SEO */
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border-width: 0; }

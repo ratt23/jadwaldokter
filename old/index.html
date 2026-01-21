@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jadwal Dokter & Medical Check Up - RSU Siloam Ambon</title>
+    <meta name="description" content="Cek jadwal dokter spesialis anak, kandungan, penyakit dalam, dan pesan paket Medical Check Up (MCU) Pelaut, Basic, hingga Platinum di RSU Siloam Hospitals Ambon. Update setiap hari.">
+    
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://jadwaldoktershab.netlify.app/">
+    <meta property="og:title" content="Jadwal Dokter & Booking MCU - RSU Siloam Ambon">
+    <meta property="og:description" content="Informasi jadwal praktik dokter terkini dan paket pemeriksaan kesehatan (MCU) lengkap.">
+    <meta property="og:image" content="asset/logo/logo.png">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="style.css">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+</head>
+<body class="bg-white font-inter">
+
+    <div id="main-container" class="main-content">
+        <header class="dynamic-header">
+            <div class="logo-container">
+                <img src="asset/logo/logo.png" alt="Logo Siloam Hospitals Ambon">
+            </div>
+            <div class="slider-container">
+                <div class="slider-track">
+                    <div class="slide">
+                        <div class="polyclinic-text">
+                            <span>Jadwal Poliklinik</span>
+                            <span class="hospital-name">RSU Siloam Ambon</span>
+                        </div>
+                    </div>
+                    <div class="slide emergency-text">
+                        <div class="emergency-content">
+                            <span class="emergency-number">1-500-911</span>
+                            <span class="emergency-desc">24/7 Emergency & Contact Center</span>
+                        </div>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="phone-icon" viewBox="0 0 20 20" fill="currentColor">
+                          <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div id="home-view">
+            <h1 class="sr-only">Jadwal Praktik Dokter Spesialis & Layanan Kesehatan RSU Siloam Ambon</h1>
+
+            <div class="p-6">
+                <div class="mb-8 relative">
+                    <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" /></svg>
+                    </span>
+                    <input type="text" id="searchInput" placeholder="Cari nama dokter atau spesialisasi..." class="w-full pl-10 pr-10 py-3 border border-slate-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 text-black shadow-sm">
+                    <button id="clearSearch" class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 hidden">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                    </button>
+                </div>
+            </div>
+            
+            <div id="searchResultsContainer" class="px-6 grid md:grid-cols-2 lg:grid-cols-3 gap-4 hidden"></div>
+
+            <section id="notifications-section" class="mb-8 px-6 hidden">
+                <div class="grid grid-cols-2 gap-4 md:gap-6">
+                    <div id="poliklinik-hari-ini" class="hidden">
+                        <h3 class="section-title mb-2 text-base">Poliklinik Hari Ini</h3>
+                        <div class="ticker-wrap h-48 bg-white rounded-xl shadow-sm border border-slate-100">
+                            <div id="poliklinik-ticker" class="ticker-track"></div>
+                        </div>
+                    </div>
+                    <div id="info-dokter-cuti" class="hidden">
+                        <h3 class="section-title mb-2 text-base">Informasi Dokter Cuti</h3>
+                        <div class="ticker-wrap h-48 bg-white rounded-xl shadow-sm border border-slate-100">
+                            <div id="cuti-ticker" class="ticker-track"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <section>
+                <div id="specialist-list" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 px-6 pb-6">
+                    </div>
+            </section>
+        </div>
+
+        <div id="mcu-view" class="hidden p-6 pb-24 animate-fade-in">
+            <div class="flex items-center mb-6">
+                <button id="backToHomeBtn" class="mr-4 p-2 rounded-full bg-slate-100 hover:bg-slate-200 shadow-sm transition" aria-label="Kembali ke Beranda">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-slate-700" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
+                </button>
+                <h1 class="text-2xl font-bold text-slate-800">Paket Medical Check Up</h1>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                
+                <article class="bg-white rounded-2xl shadow-lg border-2 border-blue-600 relative flex flex-col h-full hover:shadow-xl transition overflow-hidden group transform md:-translate-y-2 z-10">
+                    <div class="absolute top-0 right-0 bg-blue-600 text-white text-xs font-bold px-3 py-1 rounded-bl-lg z-20">
+                        REKOMENDASI
+                    </div>
+                    <div class="h-48 bg-blue-50 relative overflow-hidden">
+                        <img src="asset/webp/6.webp" alt="Paket MCU Pelaut Siloam Ambon" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                    </div>
+                    <div class="p-6 flex flex-col flex-grow">
+                        <h2 class="text-xl font-bold text-slate-800 flex items-center gap-2">
+                            MCU Pelaut
+                            <span class="text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full">Bersertifikat</span>
+                        </h2>
+                        <div class="text-2xl font-bold text-blue-700 my-2">Rp 1.500.000 <span class="text-sm text-slate-500 font-normal">(Base)</span></div>
+                        <ul class="flex-grow space-y-2 mb-4 text-sm text-slate-600">
+							<li class="flex items-start gap-2"><span class="text-green-500 font-bold"></span><b>Pemeriksaan Fisik</b> </li>
+                            <li class="flex items-start gap-2"><span class="text-green-500 font-bold">✓</span> Pemeriksaan Dokter Umum</li>
+							<li class="flex items-start gap-2"><span class="text-green-500 font-bold">✓</span> Pemeriksaan Dokter Gigi</li>
+							<li class="flex items-start gap-2"><span class="text-green-500 font-bold">✓</span> Ishihara dan Visus</li>
+							<li class="flex items-start gap-2"><span class="text-green-500 font-bold"></span><b>Pemeriksaan Darah</b> </li>
+							<li class="flex items-start gap-2"><span class="text-green-500 font-bold">✓</span> Darah Lengkap</li>
+							<li class="flex items-start gap-2"><span class="text-green-500 font-bold">✓</span> VDRL</li>
+							<li class="flex items-start gap-2"><span class="text-green-500 font-bold">✓</span> HBsAg</li>
+							 <div class="extra-items hidden space-y-2">
+							<li class="flex items-start gap-2"><span class="text-green-500 font-bold"></span><b>Pemeriksaan Urine</b> </li>
+							<li class="flex items-start gap-2"><span class="text-green-500 font-bold">✓</span> Urine Lengkap</li>
+							<li class="flex items-start gap-2"><span class="text-green-500 font-bold"></span><b>Kolesterol</b> </li>
+                            <li class="flex items-start gap-2"><span class="text-green-500 font-bold">✓</span> Total Kolesterol</li>
+                            <li class="flex items-start gap-2"><span class="text-green-500 font-bold">✓</span> Trigliserida</li>
+							<li class="flex items-start gap-2"><span class="text-green-500 font-bold"></span><b>Fungsi Ginjal</b> </li>
+                            <li class="flex items-start gap-2"><span class="text-green-500 font-bold">✓</span> Ureum</li>
+                            <li class="flex items-start gap-2"><span class="text-green-500 font-bold">✓</span> Creatine</li>
+							<li class="flex items-start gap-2"><span class="text-green-500 font-bold">✓</span> Asam Urat</li>
+							<li class="flex items-start gap-2"><span class="text-green-500 font-bold"></span><b>Pemeriksaan Diabetes</b> </li>
+							<li class="flex items-start gap-2"><span class="text-green-500 font-bold">✓</span> Gula Darah Puasa</li>
+							<li class="flex items-start gap-2"><span class="text-green-500 font-bold"></span><b>Fungsi Hati</b> </li>
+							<li class="flex items-start gap-2"><span class="text-green-500 font-bold">✓</span> SGOT</li>
+							<li class="flex items-start gap-2"><span class="text-green-500 font-bold">✓</span> SGPT</li>
+							<li class="flex items-start gap-2"><span class="text-green-500 font-bold"></span><b>Pemeriksaan Alat</b> </li>
+							<li class="flex items-start gap-2"><span class="text-green-500 font-bold">✓</span> EKG</li>
+							<li class="flex items-start gap-2"><span class="text-green-500 font-bold">✓</span> Audiometri</li>
+							<li class="flex items-start gap-2"><span class="text-green-500 font-bold">✓</span> Thorax AP/PA</li>
+                            <li class="flex items-start gap-2"><span class="text-green-500 font-bold">✓</span> <b>Sertifikat Kesehatan Pelaut</b></li>
+                            <div class="mt-4 pt-3 border-t border-dashed border-slate-300">
+                                <p class="font-bold text-xs text-slate-500 mb-1">Pemeriksaan Tambahan :</p>
+                                <li class="flex justify-between items-center text-xs"><span>Golongan Darah</span><span class="font-semibold text-slate-700">Rp 50.000</span></li>
+                                <li class="flex justify-between items-center text-xs"><span>IGM Anti HAV</span><span class="font-semibold text-slate-700">Rp 300.000</span></li>
+                            </div>
+                        </ul>
+							 <button class="text-blue-600 text-sm font-semibold mb-6 hover:underline text-left btn-read-more" data-state="closed">Lihat Selengkapnya</button>
+                        <button class="w-full py-3 bg-blue-700 text-white rounded-xl font-bold hover:bg-blue-800 transition btn-select-package shadow-lg shadow-blue-200" 
+                                data-package="MCU Pelaut" 
+                                data-base-price="1500000"
+                                data-is-pelaut="true">
+                            Pilih Paket Pelaut
+                        </button>
+                    </div>
+                </article>
+                <article class="bg-white rounded-2xl shadow-sm border border-slate-100 flex flex-col h-full hover:shadow-md transition overflow-hidden group">
+                   <div class="h-48 bg-slate-200 relative overflow-hidden">
+                      <img src="asset/webp/1.webp" alt="Paket MCU Basic Siloam Ambon" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                   </div>
+                   <div class="p-6 flex flex-col flex-grow">
+                      <h2 class="text-xl font-bold text-slate-800">MCU Basic</h2>
+                      <div class="text-2xl font-bold text-blue-700 my-2">Rp 1.100.000</div>
+                      <ul class="flex-grow space-y-2 mb-4 text-sm text-slate-600">
+                            <li class="flex items-start gap-2"><span class="text-green-500 font-bold">✓</span> Pemeriksaan Fisik Dokter Umum</li>
+                            <li class="flex items-start gap-2"><span class="text-green-500 font-bold"></span><b>Pemeriksaan Darah</b> </li>
+                            <li class="flex items-start gap-2"><span class="text-green-500 font-bold">✓</span> Darah Lengkap</li>
+                            <li class="flex items-start gap-2"><span class="text-green-500 font-bold"></span><b>Kolesterol</b> </li>
+                            <li class="flex items-start gap-2"><span class="text-green-500 font-bold">✓</span> Total Cholesterol </li>
+                            <li class="flex items-start gap-2"><span class="text-green-500 font-bold">✓</span> HDL </li>
+                            <li class="flex items-start gap-2"><span class="text-green-500 font-bold">✓</span> LDL </li>
+                            <li class="flex items-start gap-2"><span class="text-green-500 font-bold">✓</span> Trigliserida </li>
+                            <li class="flex items-start gap-2"><span class="text-green-500 font-bold"></span><b>Pemeriksaan Urine</b></li>
+                            <li class="flex items-start gap-2"><span class="text-green-500 font-bold">✓</span>Urine Lengkap</li>
+                            <div class="extra-items hidden space-y-2">
+                                <li class="flex items-start gap-2"><span class="text-green-500 font-bold"></span><b>Fungsi Ginjal</b></li>
+                                <li class="flex items-start gap-2"><span class="text-green-500 font-bold">✓</span> Ureum & Creatine</li>
+                                <li class="flex items-start gap-2"><span class="text-green-500 font-bold">✓</span> Uric Acid</li>
+                                <li class="flex items-start gap-2"><span class="text-green-500 font-bold"></span><b>Fungsi Hati</b></li>
+                                <li class="flex items-start gap-2"><span class="text-green-500 font-bold">✓</span>SGOT</li>
+                                <li class="flex items-start gap-2"><span class="text-green-500 font-bold">✓</span>SGPT</li>
+                                <li class="flex items-start gap-2"><span class="text-green-500 font-bold"></span><b>Pemeriksaan Diabetes</b></li>
+                                <li class="flex items-start gap-2"><span class="text-green-500 font-bold">✓</span>Gula Darah Puasa</li>
+                                <li class="flex items-start gap-2"><span class="text-green-500 font-bold"></span><b>Pemeriksaan Alat</b></li>
+                                <li class="flex items-start gap-2"><span class="text-green-500 font-bold">✓</span>Thorax AP/PA</li>
+                            </div>
+                      </ul>
+                      <button class="text-blue-600 text-sm font-semibold mb-6 hover:underline text-left btn-read-more" data-state="closed">Lihat Selengkapnya</button>
+                      <button class="w-full py-3 bg-blue-900 text-white rounded-xl font-semibold hover:bg-blue-800 transition btn-select-package shadow-lg shadow-blue-100" data-package="MCU Basic">Pilih Paket</button>
+                   </div>
+                </article>
+
+                <article class="bg-white rounded-2xl shadow-sm border border-slate-100 flex flex-col h-full hover:shadow-md transition overflow-hidden group">
+                   <div class="h-48 bg-slate-200 relative overflow-hidden">
+                      <img src="asset/webp/2.webp" alt="Paket MCU Silver Siloam Ambon" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                   </div>
+                   <div class="p-6 flex flex-col flex-grow">
+                      <h2 class="text-xl font-bold text-slate-800">MCU Silver</h2>
+                      <div class="text-2xl font-bold text-blue-700 my-2">Rp 1.500.000</div>
+                      <ul class="flex-grow space-y-2 mb-4 text-sm text-slate-600">
+                            <li class="flex items-start gap-2"><span class="text-green-500 font-bold">✓</span> Pemeriksaan Fisik Dokter Umum</li>
+                            <li class="flex items-start gap-2"><span class="text-green-500 font-bold"></span><b>Pemeriksaan Darah</b> </li>
+                            <li class="flex items-start gap-2"><span class="text-green-500 font-bold">✓</span> Darah Lengkap</li>
+                            <li class="flex items-start gap-2"><span class="text-green-500 font-bold"></span><b>Kolesterol</b> </li>
+                            <li class="flex items-start gap-2"><span class="text-green-500 font-bold">✓</span> Total Cholesterol </li>
+                            <li class="flex items-start gap-2"><span class="text-green-500 font-bold">✓</span> HDL </li>
+                            <li class="flex items-start gap-2"><span class="text-green-500 font-bold">✓</span> LDL </li>
+                            <li class="flex items-start gap-2"><span class="text-green-500 font-bold">✓</span> Trigliserida </li>
+                            <li class="flex items-start gap-2"><span class="text-green-500 font-bold"></span><b>Pemeriksaan Urine</b></li>
+                            <li class="flex items-start gap-2"><span class="text-green-500 font-bold">✓</span>Urine Lengkap</li>
+                            <div class="extra-items hidden space-y-2">
+                                <li class="flex items-start gap-2"><span class="text-green-500 font-bold"></span><b>Fungsi Ginjal</b></li>
+                                <li class="flex items-start gap-2"><span class="text-green-500 font-bold">✓</span> Ureum & Creatine</li>
+                                <li class="flex items-start gap-2"><span class="text-green-500 font-bold">✓</span> Uric Acid</li>
+                                <li class="flex items-start gap-2"><span class="text-green-500 font-bold"></span><b>Fungsi Hati</b></li>
+                                <li class="flex items-start gap-2"><span class="text-green-500 font-bold">✓</span>SGOT</li>
+                                <li class="flex items-start gap-2"><span class="text-green-500 font-bold">✓</span>SGPT</li>
+                                <li class="flex items-start gap-2"><span class="text-green-500 font-bold"></span><b>Pemeriksaan Diabetes</b></li>
+                                <li class="flex items-start gap-2"><span class="text-green-500 font-bold">✓</span>Gula Darah Puasa</li>
+                                <li class="flex items-start gap-2"><span class="text-green-500 font-bold">✓</span>HbA1C</li>
+                                <li class="flex items-start gap-2"><span class="text-green-500 font-bold"></span><b>Pemeriksaan Alat</b></li>
+                                <li class="flex items-start gap-2"><span class="text-green-500 font-bold">✓</span>Thorax AP/PA</li>
+                            </div>
+                      </ul>
+                      <button class="text-blue-600 text-sm font-semibold mb-6 hover:underline text-left btn-read-more" data-state="closed">Lihat Selengkapnya</button>
+                      <button class="w-full py-3 bg-blue-900 text-white rounded-xl font-semibold hover:bg-blue-800 transition btn-select-package shadow-lg shadow-blue-100" data-package="MCU Silver">Pilih Paket</button>
+                   </div>
+                </article>
+
+                <article class="bg-white rounded-2xl shadow-sm border border-slate-100 flex flex-col h-full hover:shadow-md transition overflow-hidden group">
+                   <div class="h-48 bg-slate-200 relative overflow-hidden">
+                      <img src="asset/webp/3.webp" alt="Paket MCU Gold Siloam Ambon" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                   </div>
+                   <div class="p-6 flex flex-col flex-grow">
+                      <h2 class="text-xl font-bold text-slate-800">MCU Gold</h2>
+                      <div class="text-2xl font-bold text-blue-700 my-2">Rp 2.450.000</div>
+                      <ul class="flex-grow space-y-2 mb-4 text-sm text-slate-600">
+                            <li class="flex items-start gap-2"><span class="text-green-500 font-bold">✓</span> Pemeriksaan Fisik Dokter Umum</li>
+                            <li class="flex items-start gap-2"><span class="text-green-500 font-bold"></span><b>Pemeriksaan Darah</b> </li>
+                            <li class="flex items-start gap-2"><span class="text-green-500 font-bold">✓</span> Darah Lengkap</li>
+                            <li class="flex items-start gap-2"><span class="text-green-500 font-bold"></span><b>Kolesterol</b> </li>
+                            <li class="flex items-start gap-2"><span class="text-green-500 font-bold">✓</span> Total Cholesterol </li>
+                            <li class="flex items-start gap-2"><span class="text-green-500 font-bold">✓</span> HDL </li>
+                            <li class="flex items-start gap-2"><span class="text-green-500 font-bold">✓</span> LDL </li>
+                            <li class="flex items-start gap-2"><span class="text-green-500 font-bold">✓</span> Trigliserida </li>
+                            <li class="flex items-start gap-2"><span class="text-green-500 font-bold"></span><b>Pemeriksaan Urine</b></li>
+                            <li class="flex items-start gap-2"><span class="text-green-500 font-bold">✓</span>Urine Lengkap</li>
+                            <div class="extra-items hidden space-y-2">
+                                <li class="flex items-start gap-2"><span class="text-green-500 font-bold"></span><b>Fungsi Ginjal</b></li>
+                                <li class="flex items-start gap-2"><span class="text-green-500 font-bold">✓</span> Ureum & Creatine</li>
+                                <li class="flex items-start gap-2"><span class="text-green-500 font-bold">✓</span> Uric Acid</li>
+                                <li class="flex items-start gap-2"><span class="text-green-500 font-bold"></span><b>Fungsi Hati</b></li>
+                                <li class="flex items-start gap-2"><span class="text-green-500 font-bold">✓</span>SGOT</li>
+                                <li class="flex items-start gap-2"><span class="text-green-500 font-bold">✓</span>SGPT</li>
+                                <li class="flex items-start gap-2"><span class="text-green-500 font-bold"></span><b>Pemeriksaan Diabetes</b></li>
+                                <li class="flex items-start gap-2"><span class="text-green-500 font-bold">✓</span>Gula Darah Puasa</li>
+                                <li class="flex items-start gap-2"><span class="text-green-500 font-bold">✓</span>HbA1C</li>
+                                <li class="flex items-start gap-2"><span class="text-green-500 font-bold"></span><b>Pemeriksaan Alat</b></li>
+                                <li class="flex items-start gap-2"><span class="text-green-500 font-bold">✓</span>Thorax AP/PA</li>
+                                <li class="flex items-start gap-2"><span class="text-green-500 font-bold">✓</span>ECG</li>
+                                <li class="flex items-start gap-2"><span class="text-green-500 font-bold">✓</span>Treadmill</li>
+                                <li class="flex items-start gap-2"><span class="text-green-500 font-bold">✓</span>USG Abdomen</li>
+                            </div>
+                      </ul>
+                      <button class="text-blue-600 text-sm font-semibold mb-6 hover:underline text-left btn-read-more" data-state="closed">Lihat Selengkapnya</button>
+                      <button class="w-full py-3 bg-blue-900 text-white rounded-xl font-semibold hover:bg-blue-800 transition btn-select-package shadow-lg shadow-blue-100" data-package="MCU Gold">Pilih Paket</button>
+                   </div>
+                </article>
+
+                <article class="bg-white rounded-2xl shadow-sm border border-slate-100 flex flex-col h-full hover:shadow-md transition overflow-hidden group">
+                    <div class="h-48 bg-slate-200 relative overflow-hidden">
+                        <img src="asset/webp/4.webp" alt="Paket MCU Platinum Wanita Siloam Ambon" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                    </div>
+                    <div class="p-6 flex flex-col flex-grow">
+                        <h2 class="text-xl font-bold text-slate-800">MCU Platinum Wanita</h2>
+                        <div class="text-2xl font-bold text-blue-700 my-2">Rp 3.600.000</div>
+                        <ul class="flex-grow space-y-2 mb-4 text-sm text-slate-600">
+                             <li class="flex items-start gap-2"><span class="text-green-500 font-bold">✓</span> Pemeriksaan Fisik Dokter Umum</li>
+                             <li class="flex items-start gap-2"><span class="text-green-500 font-bold"></span><b>Pemeriksaan Darah</b> </li>
+                             <li class="flex items-start gap-2"><span class="text-green-500 font-bold">✓</span> Darah Lengkap</li>
+                             <li class="flex items-start gap-2"><span class="text-green-500 font-bold"></span><b>Kolesterol</b> </li>
+                             <li class="flex items-start gap-2"><span class="text-green-500 font-bold">✓</span> Total Cholesterol </li>
+                             <li class="flex items-start gap-2"><span class="text-green-500 font-bold">✓</span> HDL </li>
+                             <li class="flex items-start gap-2"><span class="text-green-500 font-bold">✓</span> LDL </li>
+                             <li class="flex items-start gap-2"><span class="text-green-500 font-bold">✓</span> Trigliserida </li>
+                             <li class="flex items-start gap-2"><span class="text-green-500 font-bold"></span><b>Pemeriksaan Urine</b></li>
+                             <li class="flex items-start gap-2"><span class="text-green-500 font-bold">✓</span>Urine Lengkap</li>
+                             <div class="extra-items hidden space-y-2">
+                                 <li class="flex items-start gap-2"><span class="text-green-500 font-bold"></span><b>Fungsi Ginjal</b></li>
+                                 <li class="flex items-start gap-2"><span class="text-green-500 font-bold">✓</span> Ureum & Creatine</li>
+                                 <li class="flex items-start gap-2"><span class="text-green-500 font-bold">✓</span> Uric Acid</li>
+                                 <li class="flex items-start gap-2"><span class="text-green-500 font-bold"></span><b>Fungsi Hati</b></li>
+                                 <li class="flex items-start gap-2"><span class="text-green-500 font-bold">✓</span>SGOT</li>
+                                 <li class="flex items-start gap-2"><span class="text-green-500 font-bold">✓</span>SGPT</li>
+                                 <li class="flex items-start gap-2"><span class="text-green-500 font-bold">✓</span>Alkali</li>
+                                 <li class="flex items-start gap-2"><span class="text-green-500 font-bold"></span><b>Pemeriksaan Tumor Marker</b></li>
+                                 <li class="flex items-start gap-2"><span class="text-green-500 font-bold">✓</span>AFP</li>
+                                 <li class="flex items-start gap-2"><span class="text-green-500 font-bold">✓</span>CEA</li>
+                                 <li class="flex items-start gap-2"><span class="text-green-500 font-bold"></span><b>Pemeriksaan Hepatitis</b></li>
+                                 <li class="flex items-start gap-2"><span class="text-green-500 font-bold">✓</span>HBsAg Qualitative</li>
+                                 <li class="flex items-start gap-2"><span class="text-green-500 font-bold"></span><b>Pemeriksaan Diabetes</b></li>
+                                 <li class="flex items-start gap-2"><span class="text-green-500 font-bold">✓</span>Gula Darah Puasa</li>
+                                 <li class="flex items-start gap-2"><span class="text-green-500 font-bold">✓</span>HbA1C</li>
+                                 <li class="flex items-start gap-2"><span class="text-green-500 font-bold"></span><b>Pemeriksaan Alat</b></li>
+                                 <li class="flex items-start gap-2"><span class="text-green-500 font-bold">✓</span>Thorax AP/PA</li>
+                                 <li class="flex items-start gap-2"><span class="text-green-500 font-bold">✓</span>ECG</li>
+                                 <li class="flex items-start gap-2"><span class="text-green-500 font-bold">✓</span>Treadmill</li>
+                                 <li class="flex items-start gap-2"><span class="text-green-500 font-bold">✓</span>USG Abdomen</li>
+                             </div>
+                        </ul>
+                        <button class="text-blue-600 text-sm font-semibold mb-6 hover:underline text-left btn-read-more" data-state="closed">Lihat Selengkapnya</button>
+                        <button class="w-full py-3 bg-blue-900 text-white rounded-xl font-semibold hover:bg-blue-800 transition btn-select-package shadow-lg shadow-blue-100" data-package="MCU Platinum Wanita">Pilih Paket</button>
+                    </div>
+                </article>
+				
+                <article class="bg-white rounded-2xl shadow-sm border border-slate-100 flex flex-col h-full hover:shadow-md transition overflow-hidden group">
+                    <div class="h-48 bg-slate-200 relative overflow-hidden">
+                        <img src="asset/webp/5.webp" alt="Paket MCU Platinum Pria Siloam Ambon" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                    </div>
+                    <div class="p-6 flex flex-col flex-grow">
+                        <h2 class="text-xl font-bold text-slate-800">MCU Platinum Pria</h2>
+                        <div class="text-2xl font-bold text-blue-700 my-2">Rp 3.900.000</div>
+                        <ul class="flex-grow space-y-2 mb-4 text-sm text-slate-600">
+                             <li class="flex items-start gap-2"><span class="text-green-500 font-bold">✓</span> Pemeriksaan Fisik Dokter Umum</li>
+                             <li class="flex items-start gap-2"><span class="text-green-500 font-bold"></span><b>Pemeriksaan Darah</b> </li>
+                             <li class="flex items-start gap-2"><span class="text-green-500 font-bold">✓</span> Darah Lengkap</li>
+                             <li class="flex items-start gap-2"><span class="text-green-500 font-bold"></span><b>Kolesterol</b> </li>
+                             <li class="flex items-start gap-2"><span class="text-green-500 font-bold">✓</span> Total Cholesterol </li>
+                             <li class="flex items-start gap-2"><span class="text-green-500 font-bold">✓</span> HDL </li>
+                             <li class="flex items-start gap-2"><span class="text-green-500 font-bold">✓</span> LDL </li>
+                             <li class="flex items-start gap-2"><span class="text-green-500 font-bold">✓</span> Trigliserida </li>
+                             <li class="flex items-start gap-2"><span class="text-green-500 font-bold"></span><b>Pemeriksaan Urine</b></li>
+                             <li class="flex items-start gap-2"><span class="text-green-500 font-bold">✓</span>Urine Lengkap</li>
+                             <div class="extra-items hidden space-y-2">
+                                 <li class="flex items-start gap-2"><span class="text-green-500 font-bold"></span><b>Fungsi Ginjal</b></li>
+                                 <li class="flex items-start gap-2"><span class="text-green-500 font-bold">✓</span> Ureum & Creatine</li>
+                                 <li class="flex items-start gap-2"><span class="text-green-500 font-bold">✓</span> Uric Acid</li>
+                                 <li class="flex items-start gap-2"><span class="text-green-500 font-bold"></span><b>Fungsi Hati</b></li>
+                                 <li class="flex items-start gap-2"><span class="text-green-500 font-bold">✓</span>SGOT</li>
+                                 <li class="flex items-start gap-2"><span class="text-green-500 font-bold">✓</span>SGPT</li>
+                                 <li class="flex items-start gap-2"><span class="text-green-500 font-bold">✓</span>Alkali</li>
+                                 <li class="flex items-start gap-2"><span class="text-green-500 font-bold"></span><b>Pemeriksaan Tumor Marker</b></li>
+                                 <li class="flex items-start gap-2"><span class="text-green-500 font-bold">✓</span>AFP</li>
+                                 <li class="flex items-start gap-2"><span class="text-green-500 font-bold">✓</span>PSA</li>
+                                 <li class="flex items-start gap-2"><span class="text-green-500 font-bold"></span><b>Pemeriksaan Hepatitis</b></li>
+                                 <li class="flex items-start gap-2"><span class="text-green-500 font-bold">✓</span>HBsAg Qualitative</li>
+                                 <li class="flex items-start gap-2"><span class="text-green-500 font-bold"></span><b>Pemeriksaan Diabetes</b></li>
+                                 <li class="flex items-start gap-2"><span class="text-green-500 font-bold">✓</span>Gula Darah Puasa</li>
+                                 <li class="flex items-start gap-2"><span class="text-green-500 font-bold">✓</span>HbA1C</li>
+                                 <li class="flex items-start gap-2"><span class="text-green-500 font-bold"></span><b>Pemeriksaan Alat</b></li>
+                                 <li class="flex items-start gap-2"><span class="text-green-500 font-bold">✓</span>Thorax AP/PA</li>
+                                 <li class="flex items-start gap-2"><span class="text-green-500 font-bold">✓</span>ECG</li>
+                                 <li class="flex items-start gap-2"><span class="text-green-500 font-bold">✓</span>Treadmill</li>
+                                 <li class="flex items-start gap-2"><span class="text-green-500 font-bold">✓</span>USG Abdomen</li>
+                             </div>
+                        </ul>
+                        <button class="text-blue-600 text-sm font-semibold mb-6 hover:underline text-left btn-read-more" data-state="closed">Lihat Selengkapnya</button>
+                        <button class="w-full py-3 bg-blue-900 text-white rounded-xl font-semibold hover:bg-blue-800 transition btn-select-package shadow-lg shadow-blue-100" data-package="MCU Platinum Pria">Pilih Paket</button>
+                    </div>
+                </article>
+            </div>
+        </div>
+    </div>
+
+    <div id="doctorModal" class="modal-overlay hidden"><div class="modal-content"></div></div>
+    
+    <div id="mcuFormModal" class="modal-overlay hidden z-50 flex items-center justify-center">
+        <div class="modal-content bg-white p-6 rounded-2xl w-full max-w-md mx-4 relative animate-fade-in shadow-2xl max-h-[90vh] overflow-y-auto">
+            <button id="closeMcuForm" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 text-2xl transition hover:rotate-90">&times;</button>
+            <h3 class="text-xl font-bold mb-1 text-slate-800">Form Pemesanan</h3>
+            
+            <p id="selectedPackageDisplay" class="text-blue-800 font-semibold text-sm mb-2 bg-blue-50 p-2 rounded-lg"></p>
+
+            <div id="additionalOptionsContainer" class="hidden mb-4 p-3 border border-blue-100 rounded-lg bg-slate-50">
+                <p class="text-xs font-bold text-slate-500 mb-2 uppercase">Pilih Tambahan (Opsional):</p>
+                <div id="checkboxList" class="space-y-2 text-sm"></div>
+            </div>
+
+            <div id="totalPriceContainer" class="hidden mb-4 text-right">
+                <span class="text-sm text-slate-500">Total Estimasi:</span>
+                <div id="dynamicTotalPrice" class="text-2xl font-bold text-green-600">Rp 0</div>
+            </div>
+
+            <form id="orderForm" class="flex flex-col gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-slate-600 mb-1">Nama Lengkap</label>
+                    <input type="text" id="mcuNama" required class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-slate-800 transition">
+                </div>
+				<div>
+                    <label class="block text-sm font-medium text-slate-600 mb-1">Tanggal Lahir</label>
+                    <input type="date" id="mcuTanggal" required class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-slate-800 transition">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-slate-600 mb-1">No. WhatsApp</label>
+                    <input type="tel" id="mcuPhone" required class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-slate-800 transition" placeholder="Contoh: 0812...">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-slate-600 mb-1">Email</label>
+                    <input type="email" id="mcuEmail" required class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-slate-800 transition">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-slate-600 mb-1">Upload Foto KTP</label>
+                    <p class="text-xs text-red-500 mt-2 font-semibold">Foto akan dilampirkan manual di chat WA.</p>
+                </div>
+                <button type="submit" class="bg-green-500 text-white font-bold py-3 rounded-xl hover:bg-green-600 transition flex justify-center items-center gap-2 mt-2 shadow-lg shadow-green-200 active:scale-95">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91C2.13 13.66 2.59 15.36 3.45 16.86L2.05 22L7.3 20.62C8.75 21.41 10.38 21.83 12.04 21.83C17.5 21.83 21.95 17.38 21.95 11.92C21.95 9.27 20.92 6.78 19.05 4.91C17.18 3.03 14.69 2 12.04 2M12.05 3.66C14.25 3.66 16.31 4.51 17.87 6.07C19.42 7.63 20.28 9.7 20.28 11.92C20.28 16.46 16.58 20.15 12.04 20.15C10.56 20.15 9.11 19.76 7.85 19L7.55 18.83L4.43 19.65L5.26 16.61L5.06 16.29C4.24 15 3.8 13.47 3.8 11.91C3.81 7.37 7.5 3.66 12.05 3.66"/></svg>
+                    Kirim via WhatsApp
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div id="loadingAnimation" class="loading-container hidden"><div class="loading-spinner"></div><span class="loading-text">Memuat data...</span></div>
+    
+    <div id="healthPopup" class="health-popup hidden">
+        <div class="health-popup-content">
+            <div class="health-popup-header"><button id="closeHealthPopup" class="health-popup-close">&times;</button></div>
+            <div class="health-popup-body"><img src="Asset/ads/300x400px.png" alt="Info Kesehatan" class="health-popup-image"></div>
+        </div>
+    </div>
+    
+    <div id="floating-gmb-widget" class="gmb-widget hidden">
+        <button id="close-gmb-widget" class="gmb-close-btn">&times;</button>
+        <h3>Bagaimana pengalaman Anda?</h3>
+        <p>Masukan Anda membantu kami.</p>
+        <a href="https://g.page/r/CXA8lVuBr9QwEBM/review" target="_blank" class="gmb-button">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="Google Logo"><span>Beri ulasan di Google</span>
+        </a>
+        <div class="gmb-rating"><span class="score">4.8</span><span class="stars">★★★★★</span></div>
+    </div>
+    
+    <a href="https://wa.me/628114788008" target="_blank" class="whatsapp-button hidden">
+        <img src="Asset/icon/whatsapp-icon.png.png" alt="Ikon WhatsApp" class="h-8 w-8">
+    </a>
+
+    <footer class="sticky-copyright-footer">
+        <div class="footer-content-wrapper">
+            <div class="footer-left">
+                    <p>&copy; <script>document.write(new Date().getFullYear())</script> <b>RSU Siloam Ambon</b>. All Rights Reserved.</p>
+            </div>
+            <div class="footer-right">
+                <span>Designed & Developed by <b>Marcomm SHAB</b></span>
+                <a href="https://www.linkedin.com/in/raditya-putra-titapasanea-a250a616a/" target="_blank" class="linkedin-icon-link">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+                    </svg>
+                </a>
+            </div>
+        </div>
+    </footer>
+    <footer class="bottom-nav">
+        <a href="#" id="nav-home" class="nav-item active"><span>Home</span></a>
+        <a href="#" id="nav-mcu" class="nav-item"><span>Medical Check Up</span></a>
+    </footer>
+    
+    <script src="script.js"></script>
+	<script type="application/ld+json">
+{
+  "@context": "https://schema.org/",
+  "@type": "ItemList",
+  "itemListElement": [
+    {
+      "@type": "Product",
+      "position": 1,
+      "name": "MCU Pelaut (Seafarer)",
+      "description": "Paket MCU khusus pelaut dengan standar buku garuda, sertifikat kesehatan pelaut, dan pemeriksaan narkoba.",
+      "image": "https://images.unsplash.com/photo-1500916434205-0c77489c6cf7",
+      "offers": { "@type": "Offer", "priceCurrency": "IDR", "price": "1400000", "availability": "https://schema.org/InStock", "url": "https://jadwaldoktershab.netlify.app/#mcu", "seller": { "@type": "Hospital", "name": "Siloam Hospitals Ambon" } }
+    },
+    {
+      "@type": "Product",
+      "position": 2,
+      "name": "MCU Basic",
+      "description": "Paket pemeriksaan kesehatan dasar meliputi Fisik Dokter Umum, Darah Lengkap, Profil Lemak, dan Urine Lengkap.",
+      "image": "https://jadwaldoktershab.netlify.app/asset/webp/1.webp",
+      "offers": { "@type": "Offer", "priceCurrency": "IDR", "price": "1100000", "availability": "https://schema.org/InStock", "url": "https://jadwaldoktershab.netlify.app/#mcu", "seller": { "@type": "Hospital", "name": "Siloam Hospitals Ambon" } }
+    },
+    {
+      "@type": "Product",
+      "position": 3,
+      "name": "MCU Silver",
+      "description": "Paket MCU menengah + Fungsi Ginjal, Fungsi Hati, Diabetes, dan Thorax.",
+      "image": "https://jadwaldoktershab.netlify.app/asset/webp/2.webp",
+      "offers": { "@type": "Offer", "priceCurrency": "IDR", "price": "1500000", "availability": "https://schema.org/InStock", "url": "https://jadwaldoktershab.netlify.app/#mcu", "seller": { "@type": "Hospital", "name": "Siloam Hospitals Ambon" } }
+    },
+    {
+      "@type": "Product",
+      "position": 4,
+      "name": "MCU Gold",
+      "description": "Paket MCU jantung sehat + ECG, Treadmill, dan USG Abdomen.",
+      "image": "https://jadwaldoktershab.netlify.app/asset/webp/3.webp",
+      "offers": { "@type": "Offer", "priceCurrency": "IDR", "price": "2450000", "availability": "https://schema.org/InStock", "url": "https://jadwaldoktershab.netlify.app/#mcu", "seller": { "@type": "Hospital", "name": "Siloam Hospitals Ambon" } }
+    },
+    {
+      "@type": "Product",
+      "position": 5,
+      "name": "MCU Platinum Wanita",
+      "description": "Paket MCU eksekutif wanita + Tumor Marker & Hepatitis.",
+      "image": "https://jadwaldoktershab.netlify.app/asset/webp/4.webp",
+      "offers": { "@type": "Offer", "priceCurrency": "IDR", "price": "3600000", "availability": "https://schema.org/InStock", "url": "https://jadwaldoktershab.netlify.app/#mcu", "seller": { "@type": "Hospital", "name": "Siloam Hospitals Ambon" } }
+    },
+    {
+      "@type": "Product",
+      "position": 6,
+      "name": "MCU Platinum Pria",
+      "description": "Paket MCU eksekutif pria + PSA (Prostat) & Hepatitis.",
+      "image": "https://jadwaldoktershab.netlify.app/asset/webp/5.webp",
+      "offers": { "@type": "Offer", "priceCurrency": "IDR", "price": "3900000", "availability": "https://schema.org/InStock", "url": "https://jadwaldoktershab.netlify.app/#mcu", "seller": { "@type": "Hospital", "name": "Siloam Hospitals Ambon" } }
+    }
+  ]
+}
+</script>
+</body>
+</html>
