@@ -17,7 +17,7 @@ export const useDoctorData = () => {
                 // Try cache first
                 const doctorsCacheKey = 'cache_doctors';
                 const leaveCacheKey = 'cache_leave_data';
-                const cacheTTL = 60 * 60 * 1000; // 1 Hour (Optimized for Server Load)
+                const cacheTTL = 5 * 60 * 1000; // 5 minutes
 
                 let doctorsFromCache = null;
                 let leaveFromCache = null;
