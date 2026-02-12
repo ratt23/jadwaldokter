@@ -26,7 +26,7 @@ export function getApiBaseUrl() {
     }
 
     // Fallback
-    const url = import.meta.env.DEV ? API_SERVERS.local : API_SERVERS.dashdev4;
+    const url = import.meta.env.DEV ? API_SERVERS.local : API_SERVERS.dashdev2;
 
     // Ensure URL ends with /api
     if (!url.endsWith('/api') && !url.endsWith('/api/')) {
