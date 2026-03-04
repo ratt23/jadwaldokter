@@ -27,7 +27,7 @@ const DoctorCard = ({ doctor, specialtyTitle, leaveStatus }) => {
 
         if (scheduleTime && scheduleTime.trim() !== '-' && scheduleTime.trim() !== '') {
             let time = scheduleTime;
-            scheduleTextForWhatsApp += `${daysOrder[dayKey]}: ${time}\\n`;
+            scheduleTextForWhatsApp += `✅ *${daysOrder[dayKey]}*: ${time}\n`;
 
             // Highlight (MCU) for Dokter Umum
             if (specialtyTitle && specialtyTitle.includes('Dokter Umum') && time.includes('/')) {
@@ -42,7 +42,12 @@ const DoctorCard = ({ doctor, specialtyTitle, leaveStatus }) => {
         }
     }
 
-    const whatsappText = encodeURIComponent(`Jadwal Dokter:\\nNama: ${doctor.name}\\nSpesialisasi: ${specialtyTitle}\\n\\nJadwal Praktik:\\n${scheduleTextForWhatsApp}`);
+    const whatsappText = encodeURIComponent(
+        `🏥 *JADWAL PRAKTIK DOKTER*\n\n` +
+        `👨‍⚕️ *Nama:* ${doctor.name}\n` +
+        `🩺 *Spesialisasi:* ${specialtyTitle}\n\n` +
+        `📅 *Jadwal Praktik:*\n${scheduleTextForWhatsApp}`
+    );
 
     // Use proxy for Cloudinary images to bypass CORS
     const imageUrl = getProxiedImageUrl(doctor.image_url || '/asset/logo/logo.png');
