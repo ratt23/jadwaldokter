@@ -92,8 +92,7 @@ const DoctorCard = ({ doctor, specialtyTitle, leaveStatus, selectedDate, isPopup
                 `*Nama Dokter:* ${doctor.name}\n` +
                 `*Spesialisasi:* ${specialtyTitle}\n\n` +
                 `*Jadwal Praktik Mingguan:*\n${scheduleTextForWhatsApp}\n` +
-                `Status: ${isOnLeave ? 'Sedang Cuti' : 'Buka'}\n\n` +
-                `*Bagikan via Aplikasi Jadwal Dokter Siloam Ambon*`
+                `*Buat janji temu menggunakan aplikasi MySiloam*`
             );
             hasPracticingHours = hasWeeklySchedule;
         } else {
@@ -104,8 +103,7 @@ const DoctorCard = ({ doctor, specialtyTitle, leaveStatus, selectedDate, isPopup
                 `*Spesialisasi:* ${specialtyTitle}\n` +
                 `*Hari/Tanggal:* ${formattedDateString}\n` +
                 `*Jam Praktik:* ${hasPracticingHours ? scheduleTime : 'Tidak ada jadwal'}\n\n` +
-                `Status: ${isOnLeave ? 'Sedang Cuti' : hasPracticingHours ? 'Buka' : 'Tidak Praktik'}\n\n` +
-                `*Bagikan via Aplikasi Jadwal Dokter Siloam Ambon*`
+                `*Buat janji temu menggunakan aplikasi MySiloam*`
             );
         }
     } else {
@@ -117,8 +115,7 @@ const DoctorCard = ({ doctor, specialtyTitle, leaveStatus, selectedDate, isPopup
             `*Nama Dokter:* ${doctor.name}\n` +
             `*Spesialisasi:* ${specialtyTitle}\n\n` +
             `*Jadwal Praktik Mingguan:*\n${scheduleTextForWhatsApp}\n` +
-            `Status: ${isOnLeave ? 'Sedang Cuti' : 'Buka'}\n\n` +
-            `*Bagikan via Aplikasi Jadwal Dokter Siloam Ambon*`
+            `*Buat janji temu menggunakan aplikasi MySiloam*`
         );
     }
 
