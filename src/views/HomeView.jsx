@@ -149,17 +149,29 @@ const HomeView = () => {
                     const isRecentlyUpdated = doc.updated_at && new Date(doc.updated_at) > threeDaysAgo;
                     
                     if (isNew || isRecentlyUpdated) {
+                        const leaveStatus = leaveData ? leaveData.find(l => {
+                            const start = parseDateFromString(l.TanggalMulaiCuti);
+                            const end = parseDateFromString(l.TanggalSelesaiCuti);
+                            const target = selectedDate ? new Date(selectedDate) : new Date();
+                            target.setHours(0,0,0,0);
+                            start.setHours(0,0,0,0);
+                            end.setHours(0,0,0,0);
+                            return l.NamaDokter === doc.name && target >= start && target <= end;
+                        }) : null;
+
                         list.push({
                             name: doc.name,
                             specialty: spec.title,
-                            specialtyKey: specKey
+                            specialtyKey: specKey,
+                            doctor: doc,
+                            leaveStatus: leaveStatus
                         });
                     }
                 });
             }
         }
         return list;
-    }, [doctorsData, config]);
+    }, [doctorsData, config, leaveData, selectedDate]);
 
     // Handle smooth rotation for doctor updates (slide-up)
     useEffect(() => {
