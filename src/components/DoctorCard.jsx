@@ -91,7 +91,7 @@ const DoctorCard = ({ doctor, specialtyTitle, leaveStatus, selectedDate, isPopup
                 `*${config.hospitalName || 'RSU Siloam Ambon'}*\n\n` +
                 `*Nama Dokter:* ${doctor.name}\n` +
                 `*Spesialisasi:* ${specialtyTitle}\n\n` +
-                `*Jadwal Praktik Mingguan:*\n${scheduleTextForWhatsApp}\n` +
+                `*Jadwal Praktik:*\n${scheduleTextForWhatsApp}\n` +
                 `*Buat janji temu menggunakan aplikasi MySiloam*`
             );
             hasPracticingHours = hasWeeklySchedule;
@@ -114,7 +114,7 @@ const DoctorCard = ({ doctor, specialtyTitle, leaveStatus, selectedDate, isPopup
             `*${config.hospitalName || 'RSU Siloam Ambon'}*\n\n` +
             `*Nama Dokter:* ${doctor.name}\n` +
             `*Spesialisasi:* ${specialtyTitle}\n\n` +
-            `*Jadwal Praktik Mingguan:*\n${scheduleTextForWhatsApp}\n` +
+            `*Jadwal Praktik:*\n${scheduleTextForWhatsApp}\n` +
             `*Buat janji temu menggunakan aplikasi MySiloam*`
         );
     }
