@@ -417,15 +417,15 @@ const HomeView = () => {
                 @keyframes marquee-scroll-siloam {
                     0% { transform: translateX(0); }
                     15% { transform: translateX(0); }
-                    80% { transform: translateX(calc(-100% + 95px)); }
-                    90% { transform: translateX(calc(-100% + 95px)); }
+                    80% { transform: translateX(calc(-100% + 65px)); }
+                    90% { transform: translateX(calc(-100% + 65px)); }
                     100% { transform: translateX(0); }
                 }
                 @keyframes marquee-scroll-emergency {
                     0% { transform: translateX(0); }
                     15% { transform: translateX(0); }
-                    80% { transform: translateX(calc(-100% + 155px)); }
-                    90% { transform: translateX(calc(-100% + 155px)); }
+                    80% { transform: translateX(calc(-100% + 95px)); }
+                    90% { transform: translateX(calc(-100% + 95px)); }
                     100% { transform: translateX(0); }
                 }
                 @media (min-width: 640px) {
@@ -454,9 +454,9 @@ const HomeView = () => {
             <h1 className="sr-only">Jadwal Praktik Dokter Spesialis {config.hospitalName || 'RSU Siloam Ambon'}</h1>
 
             {/* Dashboard Header Block */}
-            <div className="max-w-4xl mx-auto px-5 mb-6">
-                <div className="bg-gradient-to-br from-blue-100/75 to-indigo-100/45 p-5 rounded-3xl border border-blue-200 shadow-xs">
-                    <div className="flex justify-between items-center gap-4">
+            <div className="max-w-4xl mx-auto px-3 sm:px-5 mb-6">
+                <div className="bg-gradient-to-br from-blue-100/75 to-indigo-100/45 p-3.5 sm:p-5 rounded-3xl border border-blue-200 shadow-xs">
+                    <div className="flex justify-between items-center gap-2 sm:gap-4">
                         <div className="flex-shrink-0">
                             <h2 className="text-[17px] sm:text-2xl md:text-3xl font-extrabold text-[#01007f] tracking-tight font-sans whitespace-nowrap">
                                 Jadwal Poliklinik
@@ -469,7 +469,7 @@ const HomeView = () => {
                         {/* Alternating Small CTA Icons (Slide left + Fade) */}
                         <div className={`relative h-10 flex-shrink-0 transition-all duration-500 ease-in-out w-10 ${
                             isExpanded 
-                                ? (activeCtaIdx === 0 ? 'w-[155px] sm:w-[180px]' : 'w-[215px] sm:w-[245px]') 
+                                ? (activeCtaIdx === 0 ? 'w-[115px] sm:w-[180px]' : 'w-[145px] sm:w-[245px]') 
                                 : ''
                         }`}>
                             {/* 1. MySiloam App Download CTA */}
@@ -480,13 +480,13 @@ const HomeView = () => {
                                         ? 'opacity-100 translate-x-0 pointer-events-auto' 
                                         : 'opacity-0 translate-x-4 pointer-events-none'
                                 } ${
-                                    isExpanded ? 'w-[155px] sm:w-[180px] px-2 sm:px-3' : 'w-10 px-0 justify-center'
+                                    isExpanded ? 'w-[115px] sm:w-[180px] px-2 sm:px-3' : 'w-10 px-0 justify-center'
                                 }`}
                                 title="Download MySiloam App"
                             >
                                 {/* Text container */}
                                 <div className={`mr-1 sm:mr-2 transition-all duration-500 ease-in-out overflow-hidden flex items-center ${
-                                    isExpanded ? 'w-[95px] sm:w-[115px] opacity-100' : 'w-0 opacity-0'
+                                    isExpanded ? 'w-[65px] sm:w-[115px] opacity-100' : 'w-0 opacity-0'
                                 }`}>
                                     <span className={`text-[9px] sm:text-[11px] font-extrabold text-[#01007f] tracking-wide whitespace-nowrap uppercase pl-1 ${
                                         isExpanded ? 'run-marquee-siloam' : ''
@@ -513,13 +513,13 @@ const HomeView = () => {
                                         ? 'opacity-100 translate-x-0 pointer-events-auto' 
                                         : 'opacity-0 translate-x-4 pointer-events-none'
                                 } ${
-                                    isExpanded ? 'w-[215px] sm:w-[245px] px-2 sm:px-3' : 'w-10 px-0 justify-center'
+                                    isExpanded ? 'w-[145px] sm:w-[245px] px-2 sm:px-3' : 'w-10 px-0 justify-center'
                                 }`}
                                 title="Emergency 1500911"
                             >
                                 {/* Text container */}
                                 <div className={`mr-1 sm:mr-2 transition-all duration-500 ease-in-out overflow-hidden flex items-center ${
-                                    isExpanded ? 'w-[155px] sm:w-[185px] opacity-100' : 'w-0 opacity-0'
+                                    isExpanded ? 'w-[95px] sm:w-[185px] opacity-100' : 'w-0 opacity-0'
                                 }`}>
                                     <span className={`text-[8px] sm:text-[9.5px] font-extrabold text-white tracking-wider whitespace-nowrap uppercase pl-1 ${
                                         isExpanded ? 'run-marquee-emergency' : ''

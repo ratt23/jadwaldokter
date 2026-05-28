@@ -30,6 +30,25 @@ const DoctorCard = ({ doctor, specialtyTitle, leaveStatus, selectedDate, isPopup
         return parts[0] ? parts[0][0].toUpperCase() : "DR";
     };
 
+    // Parse weekly schedule unconditionally (always needed for popup or weekly view)
+    const daysOrder = { senin: 'Senin', selasa: 'Selasa', rabu: 'Rabu', kamis: 'Kamis', jumat: 'Jumat', sabtu: 'Sabtu' };
+    const scheduleRows = [];
+    let scheduleTextForWhatsApp = '';
+
+    for (const dayKey in daysOrder) {
+        const scheduleData = doctor.schedule?.[dayKey];
+        let time = null;
+        if (typeof scheduleData === 'string') { time = scheduleData; }
+        else if (typeof scheduleData === 'object' && scheduleData !== null && scheduleData.jam) { time = scheduleData.jam; }
+
+        if (time && time.trim() !== '-' && time.trim() !== '') {
+            scheduleRows.push({ day: daysOrder[dayKey], time: time });
+            scheduleTextForWhatsApp += `*${daysOrder[dayKey]}*: ${time}\n`;
+        }
+    }
+
+    const hasWeeklySchedule = scheduleRows.length > 0;
+
     // 1. Single Day Mode Schedule Processing
     let formattedDateString = '';
     let scheduleTime = null;
@@ -65,35 +84,32 @@ const DoctorCard = ({ doctor, specialtyTitle, leaveStatus, selectedDate, isPopup
 
         hasPracticingHours = scheduleTime && scheduleTime.trim() !== '-' && scheduleTime.trim() !== '';
 
-        whatsappText = encodeURIComponent(
-            `*INFORMASI JADWAL PRAKTIK DOKTER*\n` +
-            `*${config.hospitalName || 'RSU Siloam Ambon'}*\n\n` +
-            `*Nama Dokter:* ${doctor.name}\n` +
-            `*Spesialisasi:* ${specialtyTitle}\n` +
-            `*Hari/Tanggal:* ${formattedDateString}\n` +
-            `*Jam Praktik:* ${hasPracticingHours ? scheduleTime : 'Tidak ada jadwal'}\n\n` +
-            `Status: ${isOnLeave ? 'Sedang Cuti' : hasPracticingHours ? 'Buka' : 'Tidak Praktik'}\n\n` +
-            `*Bagikan via Aplikasi Jadwal Dokter Siloam Ambon*`
-        );
-    } else {
-        // 2. Weekly Mode Schedule Processing (All schedules)
-        const daysOrder = { senin: 'Senin', selasa: 'Selasa', rabu: 'Rabu', kamis: 'Kamis', jumat: 'Jumat', sabtu: 'Sabtu' };
-        var scheduleRows = [];
-        var scheduleTextForWhatsApp = '';
-
-        for (const dayKey in daysOrder) {
-            const scheduleData = doctor.schedule?.[dayKey];
-            let time = null;
-            if (typeof scheduleData === 'string') { time = scheduleData; }
-            else if (typeof scheduleData === 'object' && scheduleData !== null && scheduleData.jam) { time = scheduleData.jam; }
-
-            if (time && time.trim() !== '-' && time.trim() !== '') {
-                scheduleRows.push({ day: daysOrder[dayKey], time: time });
-                scheduleTextForWhatsApp += `*${daysOrder[dayKey]}*: ${time}\n`;
-            }
+        if (isPopup) {
+            // When in details popup modal, we always want the weekly schedule details and share templates
+            whatsappText = encodeURIComponent(
+                `*INFORMASI JADWAL PRAKTIK DOKTER*\n` +
+                `*${config.hospitalName || 'RSU Siloam Ambon'}*\n\n` +
+                `*Nama Dokter:* ${doctor.name}\n` +
+                `*Spesialisasi:* ${specialtyTitle}\n\n` +
+                `*Jadwal Praktik Mingguan:*\n${scheduleTextForWhatsApp}\n` +
+                `Status: ${isOnLeave ? 'Sedang Cuti' : 'Buka'}\n\n` +
+                `*Bagikan via Aplikasi Jadwal Dokter Siloam Ambon*`
+            );
+            hasPracticingHours = hasWeeklySchedule;
+        } else {
+            whatsappText = encodeURIComponent(
+                `*INFORMASI JADWAL PRAKTIK DOKTER*\n` +
+                `*${config.hospitalName || 'RSU Siloam Ambon'}*\n\n` +
+                `*Nama Dokter:* ${doctor.name}\n` +
+                `*Spesialisasi:* ${specialtyTitle}\n` +
+                `*Hari/Tanggal:* ${formattedDateString}\n` +
+                `*Jam Praktik:* ${hasPracticingHours ? scheduleTime : 'Tidak ada jadwal'}\n\n` +
+                `Status: ${isOnLeave ? 'Sedang Cuti' : hasPracticingHours ? 'Buka' : 'Tidak Praktik'}\n\n` +
+                `*Bagikan via Aplikasi Jadwal Dokter Siloam Ambon*`
+            );
         }
-
-        hasPracticingHours = scheduleRows.length > 0;
+    } else {
+        hasPracticingHours = hasWeeklySchedule;
 
         whatsappText = encodeURIComponent(
             `*INFORMASI JADWAL PRAKTIK DOKTER*\n` +
@@ -154,13 +170,13 @@ const DoctorCard = ({ doctor, specialtyTitle, leaveStatus, selectedDate, isPopup
             {/* Right Column: Doctor Info */}
             <div className="flex-1 min-w-0 pr-16">
                 <h4 className="text-[15px] md:text-[17px] font-extrabold text-slate-800 leading-tight font-sans">
-                    {doctor.name}
+                     {doctor.name}
                 </h4>
                 <p className="text-xs md:text-sm font-semibold text-slate-400 mt-1 font-sans leading-none">
                     {specialtyTitle}
                 </p>
 
-                {isSingleDayMode ? (
+                {isSingleDayMode && !isPopup ? (
                     // --- Single Day Schedule View ---
                     <>
                         {/* Date Row */}
