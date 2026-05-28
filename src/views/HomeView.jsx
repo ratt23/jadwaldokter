@@ -549,8 +549,20 @@ const HomeView = () => {
                                 placeholder="Cari nama dokter / spesialis..."
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
-                                className="w-full pl-5 pr-14 py-3.5 bg-transparent border-none text-sm focus:outline-none placeholder:text-slate-400 font-sans font-medium text-slate-700"
+                                className={`w-full pl-5 py-3.5 bg-transparent border-none text-sm focus:outline-none placeholder:text-slate-400 font-sans font-medium text-slate-700 ${
+                                    searchQuery ? 'pr-[88px]' : 'pr-14'
+                                }`}
                             />
+                            {searchQuery && (
+                                <button
+                                    onClick={() => setSearchQuery('')}
+                                    className="absolute right-12 p-2 hover:bg-slate-100 text-slate-400 hover:text-slate-600 rounded-xl transition-all duration-200"
+                                    aria-label="Bersihkan pencarian"
+                                    type="button"
+                                >
+                                    <X className="h-5 w-5 stroke-[2.5]" />
+                                </button>
+                            )}
                             <button 
                                 className="absolute right-2.5 p-2 bg-[#01007f]/5 hover:bg-[#01007f]/10 text-[#01007f] rounded-xl transition-colors"
                                 aria-label="Cari"
