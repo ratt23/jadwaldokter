@@ -40,6 +40,7 @@ const HomeView = () => {
     const [isSpecialtyModalOpen, setIsSpecialtyModalOpen] = useState(false);
     const [isDateModalOpen, setIsDateModalOpen] = useState(false);
     const [isLeaveModalOpen, setIsLeaveModalOpen] = useState(false);
+    const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
     const [selectedPopupDoctor, setSelectedPopupDoctor] = useState(null);
 
     // Doctor Updates & Header CTA Banner States
@@ -578,10 +579,7 @@ const HomeView = () => {
                         {updatedDoctors.length > 0 && (
                             <div 
                                 className="px-4 py-2.5 bg-green-50/70 border border-green-150 rounded-2xl flex items-center gap-2 text-xs md:text-sm text-green-800 transition-all duration-300 font-sans font-semibold cursor-pointer hover:bg-green-100/70 active:scale-99"
-                                onClick={() => {
-                                    const currentDoc = updatedDoctors[currentUpdateIdx];
-                                    handleOpenDoctorPopup(currentDoc.name);
-                                }}
+                                onClick={() => setIsUpdateModalOpen(true)}
                             >
                                 <span className="flex h-2 w-2 relative flex-shrink-0">
                                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
@@ -807,6 +805,85 @@ const HomeView = () => {
                 type="leave"
             />
 
+            {/* Updated Doctors List Modal */}
+            <UpdateDoctorsModal
+                isOpen={isUpdateModalOpen}
+                onClose={() => setIsUpdateModalOpen(false)}
+                data={updatedDoctors}
+                onSelectDoctor={(name) => {
+                    setIsUpdateModalOpen(false);
+                    handleOpenDoctorPopup(name);
+                }}
+            />
+
+        </div>
+    );
+};
+
+const UpdateDoctorsModal = ({ isOpen, onClose, data, onSelectDoctor }) => {
+    const [visible, setVisible] = useState(false);
+
+    useEffect(() => {
+        if (isOpen) {
+            requestAnimationFrame(() => setVisible(true));
+        } else {
+            setVisible(false);
+        }
+    }, [isOpen]);
+
+    // Lock body scroll when modal is open
+    useEffect(() => {
+        if (!isOpen) return;
+        const originalOverflow = document.body.style.overflow;
+        document.body.style.overflow = 'hidden';
+        return () => {
+            document.body.style.overflow = originalOverflow;
+        };
+    }, [isOpen]);
+
+    if (!isOpen || !data || !data.length) return null;
+
+    const handleClose = () => {
+        setVisible(false);
+        setTimeout(onClose, 300);
+    };
+
+    return (
+        <div 
+            className={`fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs transition-opacity duration-300 ${visible ? 'opacity-100' : 'opacity-0'}`}
+            onClick={handleClose}
+        >
+            <div 
+                className={`bg-slate-50 w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[80vh] transition-transform duration-300 ${visible ? 'scale-100' : 'scale-95'}`}
+                onClick={(e) => e.stopPropagation()}
+            >
+                {/* Header */}
+                <div className="flex items-center justify-between px-6 py-4 bg-[#01007f] text-white">
+                    <h3 className="text-lg font-bold font-sans">Dokter Terbaru / Update</h3>
+                    <button 
+                        onClick={handleClose} 
+                        className="p-1 rounded-full hover:bg-white/10 text-white/80 hover:text-white transition-colors"
+                    >
+                        <X className="h-5 w-5" />
+                    </button>
+                </div>
+                
+                {/* Content */}
+                <div className="p-5 overflow-y-auto space-y-3.5">
+                    {data.map((doc, idx) => (
+                        <DoctorCard
+                            key={idx}
+                            doctor={doc.doctor}
+                            specialtyTitle={doc.specialty}
+                            leaveStatus={doc.leaveStatus}
+                            hideSchedule={true}
+                            onClick={() => {
+                                onSelectDoctor(doc.name);
+                            }}
+                        />
+                    ))}
+                </div>
+            </div>
         </div>
     );
 };

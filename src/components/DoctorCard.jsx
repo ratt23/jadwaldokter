@@ -4,7 +4,7 @@ import { trackEvent } from './AnalyticsTracker';
 import { useConfig } from '../context/ConfigContext';
 import { getProxiedImageUrl } from '../utils/imageUtils';
 
-const DoctorCard = ({ doctor, specialtyTitle, leaveStatus, selectedDate, isPopup = false, onClick }) => {
+const DoctorCard = ({ doctor, specialtyTitle, leaveStatus, selectedDate, isPopup = false, hideSchedule = false, onClick }) => {
     const config = useConfig();
     const isSingleDayMode = !!selectedDate;
     const [imageError, setImageError] = useState(false);
@@ -173,42 +173,44 @@ const DoctorCard = ({ doctor, specialtyTitle, leaveStatus, selectedDate, isPopup
                     {specialtyTitle}
                 </p>
 
-                {isSingleDayMode && !isPopup ? (
-                    // --- Single Day Schedule View ---
-                    <>
-                        {/* Date Row */}
-                        <div className="flex items-center gap-2 mt-2 text-xs md:text-sm text-slate-600 font-sans font-semibold">
-                            <Calendar className="h-4 w-4 text-[#01007f]/80 flex-shrink-0" />
-                            <span className="leading-none">{formattedDateString}</span>
-                        </div>
+                {!hideSchedule && (
+                    isSingleDayMode && !isPopup ? (
+                        // --- Single Day Schedule View ---
+                        <>
+                            {/* Date Row */}
+                            <div className="flex items-center gap-2 mt-2 text-xs md:text-sm text-slate-600 font-sans font-semibold">
+                                <Calendar className="h-4 w-4 text-[#01007f]/80 flex-shrink-0" />
+                                <span className="leading-none">{formattedDateString}</span>
+                            </div>
 
-                        {/* Clock Row */}
-                        <div className="flex items-center gap-2 mt-1.5 text-xs md:text-sm text-slate-600 font-sans font-semibold">
-                            <Clock className="h-4 w-4 text-[#01007f]/80 flex-shrink-0" />
-                            <span className="leading-none">{hasPracticingHours ? scheduleTime : 'Tidak ada praktik'}</span>
-                        </div>
-                    </>
-                ) : (
-                    // --- Weekly Full Schedule View ---
-                    <>
-                        <div className="flex items-center gap-2 mt-2 text-xs text-[#01007f] font-bold font-sans">
-                            <Calendar className="h-4 w-4 flex-shrink-0" />
-                            <span className="leading-none">Jadwal Praktik</span>
-                        </div>
+                            {/* Clock Row */}
+                            <div className="flex items-center gap-2 mt-1.5 text-xs md:text-sm text-slate-600 font-sans font-semibold">
+                                <Clock className="h-4 w-4 text-[#01007f]/80 flex-shrink-0" />
+                                <span className="leading-none">{hasPracticingHours ? scheduleTime : 'Tidak ada praktik'}</span>
+                            </div>
+                        </>
+                    ) : (
+                        // --- Weekly Full Schedule View ---
+                        <>
+                            <div className="flex items-center gap-2 mt-2 text-xs text-[#01007f] font-bold font-sans">
+                                <Calendar className="h-4 w-4 flex-shrink-0" />
+                                <span className="leading-none">Jadwal Praktik</span>
+                            </div>
 
-                        <div className="mt-1.5 flex flex-col gap-1.5 text-xs text-slate-600 font-sans font-semibold">
-                            {scheduleRows.length > 0 ? (
-                                scheduleRows.map((row, idx) => (
-                                    <div key={idx} className="flex items-center gap-2 border-b border-slate-50 pb-1 last:border-none last:pb-0">
-                                        <span className="w-14 text-slate-400 font-extrabold uppercase text-[9px]">{row.day}</span>
-                                        <span className="text-slate-700">{row.time}</span>
-                                    </div>
-                                ))
-                            ) : (
-                                <p className="text-xs text-slate-400 italic">Jadwal tidak tersedia</p>
-                            )}
-                        </div>
-                    </>
+                            <div className="mt-1.5 flex flex-col gap-1.5 text-xs text-slate-600 font-sans font-semibold">
+                                {scheduleRows.length > 0 ? (
+                                    scheduleRows.map((row, idx) => (
+                                        <div key={idx} className="flex items-center gap-2 border-b border-slate-50 pb-1 last:border-none last:pb-0">
+                                            <span className="w-14 text-slate-400 font-extrabold uppercase text-[9px]">{row.day}</span>
+                                            <span className="text-slate-700">{row.time}</span>
+                                        </div>
+                                    ))
+                                ) : (
+                                    <p className="text-xs text-slate-400 italic">Jadwal tidak tersedia</p>
+                                )}
+                            </div>
+                        </>
+                    )
                 )}
 
                 {/* CTA Button (Only shown when inside popup detail) */}
