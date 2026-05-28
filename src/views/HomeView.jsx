@@ -284,7 +284,9 @@ const HomeView = () => {
         const results = [];
         if (!doctorsData || Object.keys(doctorsData).length === 0) return [];
 
-        const dayKey = selectedDate ? indonesianDaysToKeys[selectedDate.getDay()] : null;
+        // When a search query is active, ignore day filter — show all days
+        const isSearchMode = !!searchQuery;
+        const dayKey = (!isSearchMode && selectedDate) ? indonesianDaysToKeys[selectedDate.getDay()] : null;
         const query = searchQuery ? searchQuery.toLowerCase() : '';
 
         for (const specKey in doctorsData) {
@@ -353,7 +355,7 @@ const HomeView = () => {
             }
         }
 
-        // Sort by start time if in Single Day Mode (e.g. today)
+        // Sort by start time if in Single Day Mode (not search mode)
         if (dayKey) {
             const parseStartTime = (timeStr) => {
                 if (!timeStr) return 9999;
@@ -725,7 +727,7 @@ const HomeView = () => {
             <div className="max-w-4xl mx-auto px-5">
                 <div className="flex items-center justify-between mb-4 mt-2">
                     <h3 className="text-base font-extrabold text-slate-800 tracking-tight font-sans">
-                        Jadwal Poliklinik Hari Ini
+                        {searchQuery ? `Hasil Pencarian "${searchQuery}"` : 'Jadwal Poliklinik Hari Ini'}
                     </h3>
                     <span className="text-xs font-bold text-[#01007f] bg-blue-50 px-2.5 py-1 rounded-full font-sans">
                         {filteredDoctors.length} Dokter
@@ -740,7 +742,7 @@ const HomeView = () => {
                                 doctor={doc}
                                 specialtyTitle={doc.specialtyTitle}
                                 leaveStatus={doc.leaveStatus}
-                                selectedDate={selectedDate}
+                                selectedDate={searchQuery ? null : selectedDate}
                                 onClick={() => handleOpenDoctorPopup(doc.name)}
                             />
                         ))}
