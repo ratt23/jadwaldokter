@@ -24,9 +24,9 @@ const HomeView = () => {
     const handleDownloadMySiloam = () => {
         const userAgent = navigator.userAgent || navigator.vendor || window.opera;
         if (/android/i.test(userAgent)) {
-            window.open('https://play.google.com/store/apps/details?id=com.siloam.mysiloam', '_blank');
+            window.location.href = 'https://play.google.com/store/apps/details?id=com.siloam.android&hl=id';
         } else if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
-            window.open('https://apps.apple.com/id/app/mysiloam/id1256314055', '_blank');
+            window.location.href = 'https://apps.apple.com/id/app/mysiloam/id1456325611';
         } else {
             window.open('https://www.siloamhospitals.com/mysiloam', '_blank');
         }
