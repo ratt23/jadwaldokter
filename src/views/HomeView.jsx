@@ -417,15 +417,15 @@ const HomeView = () => {
                 @keyframes marquee-scroll-siloam {
                     0% { transform: translateX(0); }
                     15% { transform: translateX(0); }
-                    80% { transform: translateX(calc(-100% + 65px)); }
-                    90% { transform: translateX(calc(-100% + 65px)); }
+                    80% { transform: translateX(calc(-100% + 55px)); }
+                    90% { transform: translateX(calc(-100% + 55px)); }
                     100% { transform: translateX(0); }
                 }
                 @keyframes marquee-scroll-emergency {
                     0% { transform: translateX(0); }
                     15% { transform: translateX(0); }
-                    80% { transform: translateX(calc(-100% + 95px)); }
-                    90% { transform: translateX(calc(-100% + 95px)); }
+                    80% { transform: translateX(calc(-100% + 85px)); }
+                    90% { transform: translateX(calc(-100% + 85px)); }
                     100% { transform: translateX(0); }
                 }
                 @media (min-width: 640px) {
@@ -486,7 +486,7 @@ const HomeView = () => {
                             >
                                 {/* Text container */}
                                 <div className={`mr-1 sm:mr-2 transition-all duration-500 ease-in-out overflow-hidden flex items-center ${
-                                    isExpanded ? 'w-[65px] sm:w-[115px] opacity-100' : 'w-0 opacity-0'
+                                    isExpanded ? 'w-[55px] sm:w-[115px] opacity-100' : 'w-0 opacity-0'
                                 }`}>
                                     <span className={`text-[9px] sm:text-[11px] font-extrabold text-[#01007f] tracking-wide whitespace-nowrap uppercase pl-1 ${
                                         isExpanded ? 'run-marquee-siloam' : ''
@@ -519,7 +519,7 @@ const HomeView = () => {
                             >
                                 {/* Text container */}
                                 <div className={`mr-1 sm:mr-2 transition-all duration-500 ease-in-out overflow-hidden flex items-center ${
-                                    isExpanded ? 'w-[95px] sm:w-[185px] opacity-100' : 'w-0 opacity-0'
+                                    isExpanded ? 'w-[85px] sm:w-[185px] opacity-100' : 'w-0 opacity-0'
                                 }`}>
                                     <span className={`text-[8px] sm:text-[9.5px] font-extrabold text-white tracking-wider whitespace-nowrap uppercase pl-1 ${
                                         isExpanded ? 'run-marquee-emergency' : ''
