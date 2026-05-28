@@ -154,27 +154,8 @@ const NotificationSection = ({ doctorsData, leaveData }) => {
     if (todayDoctors.length === 0 && leaveDoctors.length === 0) return null;
 
     return (
-        <section id="notifications-section" className="mb-8 px-4 md:px-6">
-            <div className="grid grid-cols-2 gap-2 md:gap-6">
-                {config.features.polyclinicToday && todayDoctors.length > 0 && (
-                    <Ticker
-                        title="Poliklinik Hari Ini"
-                        onClick={() => setIsTodayModalOpen(true)}
-                        headerClassName="bg-[#01007f] text-white font-poppins text-[11px] md:text-sm py-1.5 md:py-2"
-                    >
-                        {todayDoctors.map((doc, i) => (
-                            <div key={i} className="flex items-center gap-1.5 md:gap-3 bg-[#f8fafc] p-1.5 md:p-3 rounded-xl border border-slate-200">
-                                <img src={doc.image} alt={doc.name} loading="lazy" className="w-7 h-7 md:w-10 md:h-10 rounded-full object-cover flex-shrink-0" />
-                                <div className="flex-grow min-w-0 overflow-hidden relative">
-                                    <PingPongText text={doc.name} className="font-semibold text-[10px] md:text-sm text-[#1f2937] leading-tight" />
-                                    <PingPongText text={doc.specialty} className="text-[9px] md:text-xs text-slate-500" />
-                                    <div className="text-[9px] md:text-xs font-bold text-[#01007f] mt-0.5">{doc.time}</div>
-                                </div>
-                            </div>
-                        ))}
-                    </Ticker>
-                )}
-
+        <section id="notifications-section" className="mb-6 px-4 md:px-6">
+            <div className="grid grid-cols-1 gap-2 md:gap-6">
                 {config.features.doctorLeave && processedLeaveList.length > 0 && (
                     <Ticker
                         title="Dokter Cuti"
@@ -193,8 +174,6 @@ const NotificationSection = ({ doctorsData, leaveData }) => {
                         ))}
                     </Ticker>
                 )}
-
-
             </div>
 
             <ListModal

@@ -17,8 +17,6 @@ const Header = () => {
     const [isSubscribed, setIsSubscribed] = React.useState(false);
     const [showIOSPrompt, setShowIOSPrompt] = React.useState(false);
 
-    // Slider Logic
-    const [currentSlideIndex, setCurrentSlideIndex] = React.useState(0);
     const [isMobile, setIsMobile] = React.useState(window.innerWidth < 768);
 
     React.useEffect(() => {
@@ -27,69 +25,34 @@ const Header = () => {
         return () => window.removeEventListener('resize', handleResize);
     }, []);
 
-    const handleDoctorClick = (key) => {
-        if (key) {
-            navigate(`/jadwal-dokter/siloam-ambon/${key}`);
-        }
-    };
-
-    // Process slides for mobile: Split doctor updates into single slides
-    const slides = React.useMemo(() => {
-        const rawSlides = config?.headerSlides || [];
-        if (!isMobile) return rawSlides;
-
-        const newSlides = [];
-        rawSlides.forEach(slide => {
-            if (slide.type === 'doctor-updates' && slide.data && slide.data.length > 1) {
-                // Split multiple doctors into individual slides for mobile
-                slide.data.forEach(doc => {
-                    newSlides.push({
-                        ...slide,
-                        data: [doc] // Single doctor array
-                    });
-                });
-            } else {
-                newSlides.push(slide);
-            }
-        });
-        return newSlides;
-    }, [config?.headerSlides, isMobile]);
-
-    // Reset index if out of bounds (when switching modes)
-    React.useEffect(() => {
-        if (currentSlideIndex >= slides.length) {
-            setCurrentSlideIndex(0);
-        }
-    }, [slides.length, currentSlideIndex]);
+    // Live Clock and Date state
+    const [currentTime, setCurrentTime] = React.useState(new Date());
 
     React.useEffect(() => {
-        if (slides.length <= 1) return;
+        const timer = setInterval(() => {
+            setCurrentTime(new Date());
+        }, 1000);
+        return () => clearInterval(timer);
+    }, []);
 
-        let timer;
-        const nextSlide = () => {
-            setCurrentSlideIndex(prev => {
-                const nextIndex = (prev + 1) % slides.length;
-                return nextIndex;
-            });
-        };
+    const formattedHeaderTime = React.useMemo(() => {
+        const hours = String(currentTime.getHours()).padStart(2, '0');
+        const minutes = String(currentTime.getMinutes()).padStart(2, '0');
+        const seconds = String(currentTime.getSeconds()).padStart(2, '0');
+        return `${hours}:${minutes}:${seconds}`;
+    }, [currentTime]);
 
-        const currentSlide = slides[currentSlideIndex];
-        // If "Jadwal Update" notification (detected by type or content)
-        const isUpdateSlide = currentSlide?.type === 'doctor-updates';
-
-        // Duration (DIPERLAMBAT): 
-        // Mobile (Single Doc) -> 10s
-        // Desktop (Multi Doc) -> 20s
-        // Others -> 7s
-        let delay = 7000;
-        if (isUpdateSlide) {
-            delay = isMobile ? 10000 : 20000;
-        }
-
-        timer = setTimeout(nextSlide, delay);
-
-        return () => clearTimeout(timer);
-    }, [currentSlideIndex, slides.length, slides, isMobile]);
+    const formattedHeaderDate = React.useMemo(() => {
+        const indonesianDays = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+        const indonesianMonths = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+        
+        const dayName = indonesianDays[currentTime.getDay()];
+        const dateNum = currentTime.getDate();
+        const monthName = indonesianMonths[currentTime.getMonth()];
+        const year = currentTime.getFullYear();
+        
+        return `${dayName}, ${dateNum} ${monthName} ${year}`;
+    }, [currentTime]);
 
     // Helper: Detect iOS
     const isIOS = () => {
@@ -155,6 +118,42 @@ const Header = () => {
         }
     };
 
+    if (isMobile && (location.pathname === '/home' || location.pathname.startsWith('/jadwal-dokter/'))) {
+        return (
+            <>
+                <IOSInstallPrompt isOpen={showIOSPrompt} onClose={() => setShowIOSPrompt(false)} />
+                <header className="bg-white border-b border-slate-100 sticky top-0 z-50 px-4 py-3 flex items-center justify-between shadow-sm gap-3">
+                    {/* Brand Logo */}
+                    <div 
+                        className="flex-shrink-0 w-[35%] max-w-[85px] cursor-pointer"
+                        onClick={() => {
+                            setSearchQuery('');
+                            navigate('/home');
+                        }}
+                    >
+                        {config?.logoUrl ? (
+                            <img src={config.logoUrl} alt={`Logo ${config?.hospitalShortName || 'Healthcare'}`} className="w-full h-auto" />
+                        ) : (
+                            <img src="/asset/logo/logo.png" alt={`Logo ${config?.hospitalShortName || 'Healthcare'}`} className="w-full h-auto" />
+                        )}
+                    </div>
+
+                    {/* Mobile Clock & Date Display */}
+                    <div className="flex-grow flex items-center justify-end pr-1">
+                        <div className="flex flex-col items-end justify-center text-right leading-none">
+                            <div className="text-[1.05rem] font-black text-[#01007f] font-mono tracking-wide tabular-nums leading-none">
+                                {formattedHeaderTime}
+                            </div>
+                            <div className="text-[7.5px] font-extrabold text-slate-500 font-sans tracking-wider mt-1 uppercase leading-none">
+                                {formattedHeaderDate}
+                            </div>
+                        </div>
+                    </div>
+                </header>
+            </>
+        );
+    }
+
     return (
         <>
             <IOSInstallPrompt isOpen={showIOSPrompt} onClose={() => setShowIOSPrompt(false)} />
@@ -169,76 +168,16 @@ const Header = () => {
                         )}
                     </div>
 
-                    {/* Dynamic Slider Section */}
-                    <div className="h-10 md:h-14 flex-grow overflow-hidden relative bg-transparent text-primary basis-[60%] md:basis-auto flex items-center justify-end">
-                        {config?.features?.headerSlider && slides.map((slide, index) => (
-                            <div
-                                key={index}
-                                className={`absolute right-0 top-0 h-full w-full flex items-center justify-end transition-all duration-500 ease-in-out transform ${index === currentSlideIndex
-                                    ? 'opacity-100 translate-y-0'
-                                    : 'opacity-0 translate-y-4 pointer-events-none'
-                                    } `}
-                            >
-                                {slide.image ? (
-                                    <img
-                                        src={slide.image}
-                                        alt={slide.title || 'Header Slide'}
-                                        className="h-full w-auto object-contain"
-                                    />
-                                ) : (
-                                    <div className="flex items-center justify-end gap-2 md:gap-3 font-semibold text-[0.7rem] md:text-base p-0 text-right font-[Poppins]" style={{ color: slide.color || '#01007f' }}>
-                                        {/* New Slide Type: Doctor Updates (Rich Content) */}
-                                        {slide.type === 'doctor-updates' && slide.data ? (
-                                            <div className="flex items-center gap-2 md:gap-3 justify-center w-full">
-                                                <div className="font-bold text-green-600 text-[10px] md:text-xs uppercase tracking-wider mr-1 md:mr-2 border-r border-green-200 pr-2 md:pr-3 animate-bounce-slight flex-shrink-0">
-                                                    Update
-                                                </div>
-                                                {slide.data.map((doc, idx) => (
-                                                    <div
-                                                        key={idx}
-                                                        onClick={() => handleDoctorClick(doc.specialtyKey)}
-                                                        className="flex items-center gap-3 bg-white/80 backdrop-blur-sm pr-4 pl-2 py-1.5 rounded-full border border-green-200 shadow-sm animate-bounce-slight max-w-[170px] md:max-w-[220px] cursor-pointer hover:bg-white transition-colors"
-                                                    >
-                                                        <img
-                                                            src={getProxiedImageUrl(doc.image || '/asset/logo/logo.png')}
-                                                            alt={doc.name}
-                                                            className="w-7 h-7 md:w-9 md:h-9 rounded-full object-cover border-2 border-white shadow-sm flex-shrink-0 bg-white"
-                                                            onError={(e) => e.target.src = '/asset/logo/logo.png'}
-                                                        />
-                                                        <div className="flex flex-col text-left leading-none min-w-0 flex-1 overflow-hidden relative h-full justify-center">
-                                                            <PingPongText text={doc.name} className="font-bold text-[0.65rem] md:text-[0.8rem] text-slate-800" />
-                                                            <PingPongText text={doc.specialty} className="text-[0.6rem] md:text-[0.7rem] text-green-700 font-medium" />
-                                                        </div>
-                                                    </div>
-                                                ))}
-                                            </div>
-                                        ) : (
-                                            /* Default Text Slide */
-                                            <div className="flex flex-col items-end leading-[1.2]">
-                                                <span className="font-bold text-[0.9rem] md:text-[1.1rem]">{slide.title}</span>
-                                                {slide.subtitle && (
-                                                    <div className={`text-[0.65rem] md:text-[0.8rem] opacity-100 font-semibold max-w-[200px] md:max-w-[300px] overflow-hidden relative ${slide.marquee ? 'text-red-600' : ''} `}>
-                                                        {slide.isNotification ? (
-                                                            // Use PingPongText for Infos
-                                                            <PingPongText text={slide.subtitle} className="" />
-                                                        ) : (
-                                                            <span className={slide.marquee ? 'animate-pulse' : ''}>{slide.subtitle}</span>
-                                                        )}
-                                                    </div>
-                                                )}
-                                            </div>
-                                        )}
-
-                                        {/* Optional Icon */}
-                                        {slide.type === 'phone' && (
-                                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 md:h-6 md:w-6 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
-                                                <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
-                                            </svg>
-                                        )}
-                                    </div>
-                                )}
+                    {/* Desktop Clock & Date Display */}
+                    <div className="h-10 md:h-14 flex-grow flex items-center justify-end pr-1">
+                        <div className="flex flex-col items-end justify-center text-right leading-none">
+                            <div className="text-xl md:text-2xl font-black text-[#01007f] font-mono tracking-wider tabular-nums leading-none">
+                                {formattedHeaderTime}
                             </div>
-                        ))}
+                            <div className="text-[10px] md:text-xs font-extrabold text-slate-500 font-sans tracking-wide mt-1.5 md:mt-2 uppercase leading-none">
+                                {formattedHeaderDate}
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -256,7 +195,7 @@ const Header = () => {
                         ))}
                     </nav>
 
-                    <div className="flex-grow md:flex-grow-0 w-full md:w-auto min-w-[200px] flex items-center gap-2">
+                    <div className="flex-grow md:flex-grow-0 w-full md:w-auto min-w-[200px] md:min-w-0 flex items-center justify-end gap-2">
                         <button
                             onClick={handleBellClick}
                             className={`p-2 rounded-full transition-colors relative ${isSubscribed ? 'text-primary bg-blue-50' : 'text-slate-500 hover:text-primary hover:bg-slate-100'} `}
@@ -280,7 +219,7 @@ const Header = () => {
                                 </svg>
                             )}
                         </button>
-                        <div className="relative flex-grow">
+                        <div className="relative flex-grow md:hidden">
                             <input
                                 type="text"
                                 placeholder={searchPlaceholder}

@@ -1,6 +1,11 @@
 export const getProxiedImageUrl = (url) => {
     if (!url || url === '/asset/logo/logo.png') return url;
 
+    // Bypass proxy in local development to avoid proxy ECONNREFUSED when netlify functions are not running
+    if (typeof window !== 'undefined' && window.location.hostname === 'localhost') {
+        return url;
+    }
+
     // Check if Cloudinary or External URL that might have CORS issues
     // For now, specific to Cloudinary as requested
     if (url.includes('cloudinary.com')) {

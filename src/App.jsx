@@ -33,7 +33,7 @@ const AppContent = () => {
   }, [location.pathname]);
 
   return (
-    <div className="font-[Inter] bg-slate-50 min-h-screen relative overflow-x-hidden text-[#1f2937]">
+    <div className="font-sans bg-slate-50 min-h-screen relative overflow-x-hidden text-[#1f2937]">
       <AnalyticsTracker />
       {!isSlideshow && <HealthPopup />}
       {!isSlideshow && <Header />}
