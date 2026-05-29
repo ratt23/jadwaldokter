@@ -12,6 +12,15 @@ const DoctorCard = ({ doctor, specialtyTitle, leaveStatus, selectedDate, isPopup
     // Check if on leave (on selectedDate if single day mode, or today if weekly mode)
     const isOnLeave = !!leaveStatus;
 
+    // Determine status badge based on TODAY's actual day (always real-time, regardless of selectedDate)
+    const todayDayKeys = { 0: 'minggu', 1: 'senin', 2: 'selasa', 3: 'rabu', 4: 'kamis', 5: 'jumat', 6: 'sabtu' };
+    const todayDayKey = todayDayKeys[new Date().getDay()];
+    const todayScheduleData = doctor.schedule?.[todayDayKey];
+    let todayScheduleTime = null;
+    if (typeof todayScheduleData === 'string') { todayScheduleTime = todayScheduleData; }
+    else if (typeof todayScheduleData === 'object' && todayScheduleData !== null && todayScheduleData.jam) { todayScheduleTime = todayScheduleData.jam; }
+    const isPracticingToday = !isOnLeave && todayScheduleTime && todayScheduleTime.trim() !== '-' && todayScheduleTime.trim() !== '';
+
     // Common styling helper
     const imageUrl = getProxiedImageUrl(doctor.image_url || '/asset/logo/logo.png');
     const sanitizedSpecialty = specialtyTitle
@@ -135,10 +144,10 @@ const DoctorCard = ({ doctor, specialtyTitle, leaveStatus, selectedDate, isPopup
             <div className="absolute top-4 right-4 z-10">
                 {isOnLeave ? (
                     <span className="bg-red-50 text-red-600 text-[10px] font-extrabold px-2 py-0.5 rounded-full uppercase tracking-wider">Cuti</span>
-                ) : hasPracticingHours ? (
+                ) : isPracticingToday ? (
                     <span className="bg-green-50 text-green-700 text-[10px] font-extrabold px-2 py-0.5 rounded-full uppercase tracking-wider">Buka</span>
                 ) : (
-                    <span className="bg-slate-100 text-slate-500 text-[10px] font-extrabold px-2 py-0.5 rounded-full uppercase tracking-wider">Tidak Praktik</span>
+                    <span className="bg-slate-100 text-slate-500 text-[10px] font-extrabold px-2 py-0.5 rounded-full uppercase tracking-wider">Tutup</span>
                 )}
             </div>
 
