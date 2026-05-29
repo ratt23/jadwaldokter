@@ -224,25 +224,45 @@ const DoctorCard = ({ doctor, specialtyTitle, leaveStatus, selectedDate, isPopup
 
                 {/* CTA Button (Only shown when inside popup detail) */}
                 {isPopup && (
-                    !isOnLeave && hasPracticingHours ? (
-                        <a
-                            href={`https://wa.me/?text=${whatsappText}`}
-                            target="_blank"
-                            rel="noreferrer"
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                trackEvent('click_whatsapp_schedule', { doctor: doctor.name });
-                            }}
-                            className="flex items-center justify-center gap-1.5 w-full mt-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs md:text-sm py-2.5 px-4 rounded-xl shadow-xs hover:shadow-sm active:scale-98 transition-all duration-200 text-center font-sans"
-                        >
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-white flex-shrink-0" viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01C17.18 3.03 14.69 2 12.04 2M12.05 3.66c2.2 0 4.26.85 5.82 2.41 1.55 1.56 2.41 3.63 2.41 5.85 0 4.54-3.7 8.23-8.24 8.23-1.48 0-2.93-.39-4.19-1.15l-.3-.17-3.12.82.83-3.04-.2-.32c-.82-1.29-1.26-2.82-1.26-4.38 0-4.54 3.7-8.23 8.24-8.23" /></svg>
-                            <span>Share WhatsApp</span>
-                        </a>
-                    ) : (
-                        <div className="w-full mt-4 py-2.5 px-4 rounded-xl text-center bg-slate-100 text-slate-400 font-bold text-xs md:text-sm select-none font-sans">
-                            {isOnLeave ? 'Sedang Cuti' : 'Tidak Ada Praktik'}
-                        </div>
-                    )
+                    <>
+                        {/* Book Appointment via Siloam Profile — only if siloam_url is set */}
+                        {doctor.siloam_url && (
+                            <a
+                                href={doctor.siloam_url}
+                                target="_blank"
+                                rel="noreferrer"
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    trackEvent('click_book_siloam', { doctor: doctor.name });
+                                }}
+                                className="flex items-center justify-center gap-2 w-full mt-4 bg-[#01007f] hover:bg-[#0100a0] text-white font-bold text-xs md:text-sm py-2.5 px-4 rounded-xl shadow-xs hover:shadow-md active:scale-98 transition-all duration-200 text-center font-sans"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><polyline points="9 16 11 18 15 14"/></svg>
+                                <span>Book Appointment</span>
+                            </a>
+                        )}
+
+                        {/* WhatsApp Share / Status */}
+                        {!isOnLeave && hasPracticingHours ? (
+                            <a
+                                href={`https://wa.me/?text=${whatsappText}`}
+                                target="_blank"
+                                rel="noreferrer"
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    trackEvent('click_whatsapp_schedule', { doctor: doctor.name });
+                                }}
+                                className="flex items-center justify-center gap-1.5 w-full mt-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs md:text-sm py-2.5 px-4 rounded-xl shadow-xs hover:shadow-sm active:scale-98 transition-all duration-200 text-center font-sans"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-white flex-shrink-0" viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01C17.18 3.03 14.69 2 12.04 2M12.05 3.66c2.2 0 4.26.85 5.82 2.41 1.55 1.56 2.41 3.63 2.41 5.85 0 4.54-3.7 8.23-8.24 8.23-1.48 0-2.93-.39-4.19-1.15l-.3-.17-3.12.82.83-3.04-.2-.32c-.82-1.29-1.26-2.82-1.26-4.38 0-4.54 3.7-8.23 8.24-8.23" /></svg>
+                                <span>Share WhatsApp</span>
+                            </a>
+                        ) : (
+                            <div className={`w-full py-2.5 px-4 rounded-xl text-center bg-slate-100 text-slate-400 font-bold text-xs md:text-sm select-none font-sans ${doctor.siloam_url ? 'mt-2.5' : 'mt-4'}`}>
+                                {isOnLeave ? 'Sedang Cuti' : 'Tidak Ada Praktik'}
+                            </div>
+                        )}
+                    </>
                 )}
             </div>
         </div>
