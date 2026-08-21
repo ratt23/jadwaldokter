@@ -61,3 +61,21 @@ body {
         transform: translateX(var(--move-x));
     }
 }
+
+/* Sequential Ticker Marquee Animation */
+@keyframes marquee-sequence {
+    0%,
+    15% {
+        transform: translateX(0);
+    }
+
+    45%,
+    65% {
+        transform: translateX(var(--scroll-dist));
+    }
+
+    90%,
+    100% {
+        transform: translateX(0);
+    }
+}

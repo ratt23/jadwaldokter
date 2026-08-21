@@ -10,6 +10,7 @@ import DateSelectorModal from '../components/DateSelectorModal';
 import AdDisplay from '../components/AdDisplay';
 import { Search, Calendar, Stethoscope, SlidersHorizontal, X, Phone, Smartphone } from 'lucide-react';
 import PingPongText from '../components/PingPongText';
+import DoctorTickerBanner from '../components/DoctorTickerBanner';
 import { getProxiedImageUrl } from '../utils/imageUtils';
 import ListModal from '../components/ListModal';
 
@@ -226,17 +227,6 @@ const HomeView = () => {
             return dateA - dateB;
         });
     }, [leaveDoctors]);
-
-    // Handle smooth rotation for leave doctors (slide-up)
-    useEffect(() => {
-        if (processedLeaveList.length <= 1) return;
-
-        const interval = setInterval(() => {
-            setCurrentLeaveIdx((prev) => (prev + 1) % processedLeaveList.length);
-        }, 4000); // rotate every 4s
-
-        return () => clearInterval(interval);
-    }, [processedLeaveList]);
 
     // Handle alternating header CTAs (MySiloam vs Emergency) with custom timed slide-out & scroll duration
     useEffect(() => {
@@ -590,79 +580,33 @@ const HomeView = () => {
                     <div className={`mt-3.5 grid grid-cols-1 ${updatedDoctors.length > 0 ? 'sm:grid-cols-2' : 'grid-cols-1'} gap-2`}>
                         {/* Sliding Banner for Doctor Updates */}
                         {updatedDoctors.length > 0 && (
-                            <div 
-                                className="px-4 py-2.5 bg-green-50/70 border border-green-150 rounded-2xl flex items-center gap-2 text-xs md:text-sm text-green-800 transition-all duration-300 font-sans font-semibold cursor-pointer hover:bg-green-100/70 active:scale-99"
+                            <DoctorTickerBanner
+                                items={updatedDoctors}
+                                badgeText="UPDATE"
+                                type="update"
                                 onClick={() => setIsUpdateModalOpen(true)}
-                            >
-                                <span className="flex h-2 w-2 relative flex-shrink-0">
-                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                                    <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
-                                </span>
-                                <span className="text-[9px] font-extrabold uppercase bg-green-200/60 px-2 py-0.5 rounded-full text-green-700 tracking-wider flex-shrink-0 leading-none">
-                                    UPDATE
-                                </span>
-                                <div className="relative h-5 overflow-hidden flex-1">
-                                    <div 
-                                        className="transition-transform duration-500 ease-in-out" 
-                                        style={{ transform: `translateY(-${currentUpdateIdx * 20}px)` }}
-                                    >
-                                        {updatedDoctors.map((doc, idx) => (
-                                            <div key={idx} className="h-5 flex items-center pr-4">
-                                                <PingPongText 
-                                                    text={
-                                                        <span>
-                                                            Jadwal Baru: <strong className="text-green-900">{doc.name}</strong> ({doc.specialty})
-                                                        </span>
-                                                    } 
-                                                    className="w-full text-xs md:text-sm text-green-800" 
-                                                />
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-                            </div>
+                                renderItem={(doc) => (
+                                    <span>
+                                        Jadwal Baru: <strong className="text-emerald-900">{doc.name}</strong> ({doc.specialty})
+                                    </span>
+                                )}
+                            />
                         )}
 
                         {/* Sliding Banner for Doctors on Leave */}
-                        <div 
-                            className="px-4 py-2.5 bg-red-50/70 border border-red-150 rounded-2xl flex items-center gap-2 text-xs md:text-sm text-red-800 transition-all duration-300 font-sans font-semibold cursor-pointer hover:bg-red-100/70 active:scale-99"
-                            onClick={() => setIsLeaveModalOpen(true)}
-                        >
-                            <span className="flex h-2 w-2 relative flex-shrink-0">
-                                {processedLeaveList.length > 0 && (
-                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                        {processedLeaveList.length > 0 && (
+                            <DoctorTickerBanner
+                                items={processedLeaveList}
+                                badgeText="CUTI"
+                                type="leave"
+                                onClick={() => setIsLeaveModalOpen(true)}
+                                renderItem={(doc) => (
+                                    <span>
+                                        Cuti: <strong className="text-red-900">{doc.name}</strong> ({doc.formattedDates})
+                                    </span>
                                 )}
-                                <span className={`relative inline-flex rounded-full h-2 w-2 ${processedLeaveList.length > 0 ? 'bg-red-500' : 'bg-red-300'}`}></span>
-                            </span>
-                            <span className="text-[9px] font-extrabold uppercase bg-red-200/60 px-2 py-0.5 rounded-full text-red-700 tracking-wider flex-shrink-0 leading-none">
-                                CUTI
-                            </span>
-                            <div className="relative h-5 overflow-hidden flex-1">
-                                {processedLeaveList.length > 0 ? (
-                                    <div 
-                                        className="transition-transform duration-500 ease-in-out" 
-                                        style={{ transform: `translateY(-${currentLeaveIdx * 20}px)` }}
-                                    >
-                                        {processedLeaveList.map((doc, idx) => (
-                                            <div key={idx} className="h-5 flex items-center pr-4">
-                                                <PingPongText 
-                                                    text={
-                                                        <span>
-                                                            Cuti: <strong className="text-red-900">{doc.name}</strong> ({doc.formattedDates})
-                                                        </span>
-                                                    } 
-                                                    className="w-full text-xs md:text-sm text-red-800" 
-                                                />
-                                            </div>
-                                        ))}
-                                    </div>
-                                ) : (
-                                    <div className="h-5 flex items-center text-red-700">
-                                        -
-                                    </div>
-                                )}
-                            </div>
-                        </div>
+                            />
+                        )}
                     </div>
 
                     {/* Filter Buttons */}
