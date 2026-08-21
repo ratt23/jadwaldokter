@@ -1,19 +1,5 @@
 export const getProxiedImageUrl = (url) => {
-    if (!url || url === '/asset/logo/logo.png') return url;
-
-    // Bypass proxy in local development to avoid proxy ECONNREFUSED when netlify functions are not running
-    if (typeof window !== 'undefined' && window.location.hostname === 'localhost') {
-        return url;
-    }
-
-    // Check if Cloudinary or External URL that might have CORS issues
-    // For now, specific to Cloudinary as requested
-    if (url.includes('cloudinary.com')) {
-        // Use /.netlify/functions/imageProxy endpoint
-        // Vite will proxy this to localhost:3000/imageProxy in dev
-        // Netlify will route this to functions/imageProxy in prod
-        return `/.netlify/functions/imageProxy?url=${encodeURIComponent(url)}`;
-    }
-
+    if (!url || url === '/asset/logo/logo.png') return '/asset/logo/logo.png';
     return url;
 };
+

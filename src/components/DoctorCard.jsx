@@ -4,10 +4,35 @@ import { trackEvent } from './AnalyticsTracker';
 import { useConfig } from '../context/ConfigContext';
 import { getProxiedImageUrl } from '../utils/imageUtils';
 
+const LOCAL_DOCTOR_FILES = [
+    "dr. alex ranuseto, sp.pd.png","dr. amanda gracia manuputty, m.ked, sp.dv.png","dr. anitha marllyin mairuhu, m.ked.klin., sp.a., cps.png","dr. chaisari maria m. turnip, sp.btkv, fiatcvs.png","dr. chriscelia valery so, sptht-kl.png","dr. daniel siegers, sp.m.png","dr. david santoso tjoei, sp.kj, mars.png","dr. denny jolanda, sp.pd, finasim.png","dr. dian qisthi, sp.pd.png","dr. dr. rodrigo limmon, sp.tht-kl, mars.png","dr. elizabeth joan salim, sp.a.png","dr. enseline nikijuluw, sp.s.png","dr. erwin rahakbauw, spog, subsp.onk.png","dr. gery soemara, sp.jp.png","dr. hanny tanasal, sp.kk.png","dr. hery siswanto, sp.b, fics finacs.png","dr. i dewa gede sidan agung mahendra, sp.b.png","dr. i made kristya permana, sp.pd.png","dr. i wayan ardy paribrajaka, sp.m.png","dr. ika wiraswesty ciptaningdiah, sp.og, m.biomed.png","dr. iman haryana, sp.jp.png","dr. irene leha, sp.og.png","dr. ivanmorl ruspanah, sp.bs.png","dr. jansye cyntia pentury, sp.pd.png","dr. maria magdalena renjaan.png","dr. marisa afifudin, sp.p.png","dr. markus daniel taliak, sp.og.png","dr. maureen jaqualin paliyama, sp.kfr.png","dr. merlyn margareth maelissa, spog, subsp. kfm, m.kes.png","dr. mo tualeka, sp.b.png","dr. ni luh putu dirasandhi semedi putri, sp.n.png","dr. norma pattinama, sp.og.png","dr. rachmat ramadhani tuasikal, sp.og., subsp.onk.png","dr. rey jauwerissa, sp.og.png","dr. ria jauwerissa, m.biomed, sp.pd-kgh.png","dr. ria resti sukur, sp.a.png","dr. ricky masyudha, sp.b.png","dr. rina angriany, sp.p.png","dr. robby kalew, sp.a.png","dr. stanley permana setiawan, sp.tht-kl.png","dr. stefanus cahyo ariwicaksono, sp.u.png","dr. tjoa debby angela tjoanda, sp.m.png","dr. ubaidillah, sp.b (k) onk.png","dr. wigi.png","dr. wijaya johanes chendra, sp.ot (k), aifo-k, fics.png","dr. winny natacia leiwakabessy, m.kes, sppa (2).png","dr. wiwin lestari selawa, sp.kfr.png","dr. wyckmell octof ingratoeboen, sp.u.png","drg. hasrul husain, sp.pm.png","drg. imelda (2).png","drg. lieyanti melinda.png","drg. lisye fabiola loei.png","drg. roberto hutapea, sp.bmm.png","drg. slamet riyadi, sp.bmm.png","drg. stephanie astrid rehatta.png","drg. wendy agus wirawan, sp.pros.png","drg. wigiarti, sp.kg.png"
+];
+
+const getDoctorLocalPhoto = (name) => {
+    if (!name) return null;
+    const clean = name.toLowerCase().replace(/\s+/g, ' ').trim();
+    if (LOCAL_DOCTOR_FILES.includes(clean + '.png')) return `/asset/150px/${clean}.png`;
+    const parts = clean.split(',')[0].trim();
+    const found = LOCAL_DOCTOR_FILES.find(f => f.startsWith(parts) || f.includes(parts.replace(/^dr\.\s*|^drg\.\s*/i, '')));
+    return found ? `/asset/150px/${found}` : null;
+};
+
 const DoctorCard = ({ doctor, specialtyTitle, leaveStatus, selectedDate, isPopup = false, hideSchedule = false, onClick }) => {
     const config = useConfig();
     const isSingleDayMode = !!selectedDate;
-    const [imageError, setImageError] = useState(false);
+    const cleanDoctorName = (doctor?.name || '').replace(/\s+,/g, ',').trim();
+    const primaryImg = doctor?.image_url ? getProxiedImageUrl(doctor.image_url) : getDoctorLocalPhoto(doctor?.name);
+    const [currentImg, setCurrentImg] = useState(primaryImg);
+    const [hasError, setHasError] = useState(!primaryImg);
+
+    const handleImgError = () => {
+        const localPhoto = getDoctorLocalPhoto(doctor?.name);
+        if (currentImg !== localPhoto && localPhoto) {
+            setCurrentImg(localPhoto);
+        } else {
+            setHasError(true);
+        }
+    };
 
     // Check if on leave (on selectedDate if single day mode, or today if weekly mode)
     const isOnLeave = !!leaveStatus;
@@ -22,7 +47,6 @@ const DoctorCard = ({ doctor, specialtyTitle, leaveStatus, selectedDate, isPopup
     const isPracticingToday = !isOnLeave && todayScheduleTime && todayScheduleTime.trim() !== '-' && todayScheduleTime.trim() !== '';
 
     // Common styling helper
-    const imageUrl = getProxiedImageUrl(doctor.image_url || '/asset/logo/logo.png');
     const sanitizedSpecialty = specialtyTitle
         ? specialtyTitle.replace(/[^a-zA-Z0-9]/g, '_').toLowerCase()
         : 'general';
@@ -98,10 +122,12 @@ const DoctorCard = ({ doctor, specialtyTitle, leaveStatus, selectedDate, isPopup
             whatsappText = encodeURIComponent(
                 `*INFORMASI JADWAL PRAKTIK DOKTER*\n` +
                 `*${config.hospitalName || 'RSU Siloam Ambon'}*\n\n` +
-                `*Nama Dokter:* ${doctor.name}\n` +
-                `*Spesialisasi:* ${specialtyTitle}\n\n` +
-                `*Jadwal Praktik:*\n${scheduleTextForWhatsApp}\n` +
-                `*Buat janji temu menggunakan aplikasi MySiloam*`
+                `*Nama Dokter*: ${cleanDoctorName}\n` +
+                `*Spesialisasi*: ${specialtyTitle || '-'}\n` +
+                (isOnLeave ? `*Status*: SEDANG CUTI (${leaveStatus.TanggalMulaiCuti} s/d ${leaveStatus.TanggalSelesaiCuti})\n\n` : `\n`) +
+                `*Jadwal Praktik Mingguan*:\n` +
+                (hasWeeklySchedule ? scheduleTextForWhatsApp : `Jadwal tidak tersedia / Perjanjian\n`) +
+                `\n_Pendaftaran & Informasi lebih lanjut dapat melalui aplikasi MySiloam._`
             );
             hasPracticingHours = hasWeeklySchedule;
         } else {
@@ -131,7 +157,7 @@ const DoctorCard = ({ doctor, specialtyTitle, leaveStatus, selectedDate, isPopup
     return (
         <div
             onClick={(e) => {
-                trackEvent(eventName, { doctor: doctor.name, specialty: specialtyTitle });
+                trackEvent(eventName, { doctor_name: cleanDoctorName, specialty: specialtyTitle });
                 if (onClick) onClick(e);
             }}
             className={`flex items-start gap-4 bg-white p-4 sm:p-5 rounded-2xl border border-slate-100 shadow-xs transition-all duration-300 relative ${
@@ -153,20 +179,20 @@ const DoctorCard = ({ doctor, specialtyTitle, leaveStatus, selectedDate, isPopup
 
             {/* Left Column: Avatar */}
             <div className="flex flex-col items-center flex-shrink-0">
-                {!imageError && doctor.image_url ? (
+                {!hasError && currentImg ? (
                     <div className="w-16 h-16 md:w-20 md:h-20 rounded-2xl overflow-hidden bg-slate-50 border border-slate-100 flex items-center justify-center shadow-xs">
                         <img
-                            src={imageUrl}
-                            alt={`Foto ${doctor.name}`}
+                            src={currentImg}
+                            alt={`Foto ${cleanDoctorName}`}
                             loading="lazy"
-                            onError={() => setImageError(true)}
+                            onError={handleImgError}
                             className={`w-full h-full object-cover ${isOnLeave ? 'grayscale' : ''}`}
                         />
                     </div>
                 ) : (
                     <div className="w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-gradient-to-br from-blue-50 to-indigo-100/50 border border-slate-100 flex flex-col justify-center items-center shadow-xs relative overflow-hidden">
                         <span className="text-xl md:text-2xl font-black font-sans tracking-tight text-blue-600/70 z-10 leading-none">
-                            {getInitials(doctor.name)}
+                            {getInitials(cleanDoctorName)}
                         </span>
                         <Stethoscope className="w-8 h-8 text-blue-500/10 absolute stroke-[1.5]" />
                     </div>
@@ -176,7 +202,7 @@ const DoctorCard = ({ doctor, specialtyTitle, leaveStatus, selectedDate, isPopup
             {/* Right Column: Doctor Info */}
             <div className="flex-1 min-w-0 pr-16">
                 <h4 className="text-[15px] md:text-[17px] font-extrabold text-slate-800 leading-tight font-sans">
-                     {doctor.name}
+                    {cleanDoctorName}
                 </h4>
                 <p className="text-xs md:text-sm font-semibold text-slate-400 mt-1 font-sans leading-none">
                     {specialtyTitle}
