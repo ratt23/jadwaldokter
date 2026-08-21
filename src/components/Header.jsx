@@ -122,33 +122,71 @@ const Header = () => {
         return (
             <>
                 <IOSInstallPrompt isOpen={showIOSPrompt} onClose={() => setShowIOSPrompt(false)} />
-                <header className="bg-white border-b border-slate-100 sticky top-0 z-50 px-4 py-3 flex items-center justify-between shadow-sm gap-3">
-                    {/* Brand Logo */}
-                    <div 
-                        className="flex-shrink-0 w-[35%] max-w-[85px] cursor-pointer"
-                        onClick={() => {
-                            setSearchQuery('');
-                            navigate('/home');
-                        }}
-                    >
-                        {config?.logoUrl ? (
-                            <img src={config.logoUrl} alt={`Logo ${config?.hospitalShortName || 'Healthcare'}`} className="w-full h-auto" />
-                        ) : (
-                            <img src="/asset/logo/logo.png" alt={`Logo ${config?.hospitalShortName || 'Healthcare'}`} className="w-full h-auto" />
-                        )}
-                    </div>
+                <header className="bg-white border-b border-slate-100 sticky top-0 z-50 shadow-sm">
+                    {/* Row 1: Brand & Clock */}
+                    <div className="px-4 py-2.5 flex items-center justify-between gap-3">
+                        {/* Brand Logo */}
+                        <div 
+                            className="flex-shrink-0 w-[35%] max-w-[85px] cursor-pointer"
+                            onClick={() => {
+                                setSearchQuery('');
+                                navigate('/home');
+                            }}
+                        >
+                            {config?.logoUrl ? (
+                                <img src={config.logoUrl} alt={`Logo ${config?.hospitalShortName || 'Healthcare'}`} className="w-full h-auto" />
+                            ) : (
+                                <img src="/asset/logo/logo.png" alt={`Logo ${config?.hospitalShortName || 'Healthcare'}`} className="w-full h-auto" />
+                            )}
+                        </div>
 
-                    {/* Mobile Clock & Date Display */}
-                    <div className="flex-grow flex items-center justify-end pr-1">
-                        <div className="flex flex-col items-end justify-center text-right leading-none">
-                            <div className="text-[1.05rem] font-black text-[#01007f] font-mono tracking-wide tabular-nums leading-none">
-                                {formattedHeaderTime}
-                            </div>
-                            <div className="text-[7.5px] font-extrabold text-slate-500 font-sans tracking-wider mt-1 uppercase leading-none">
-                                {formattedHeaderDate}
+                        {/* Mobile Clock & Date Display */}
+                        <div className="flex-grow flex items-center justify-end pr-1">
+                            <div className="flex flex-col items-end justify-center text-right leading-none">
+                                <div className="text-[1.05rem] font-black text-[#01007f] font-mono tracking-wide tabular-nums leading-none">
+                                    {formattedHeaderTime}
+                                </div>
+                                <div className="text-[7.5px] font-extrabold text-slate-500 font-sans tracking-wider mt-1 uppercase leading-none">
+                                    {formattedHeaderDate}
+                                </div>
                             </div>
                         </div>
                     </div>
+
+                    {/* Row 2: Mobile Navigation Menu Bar (Dynamic from Site Menu Manager) */}
+                    {config?.menu && config.menu.length > 0 && (
+                        <div className="border-t border-slate-100 px-3 py-1.5 overflow-x-auto no-scrollbar flex items-center gap-1.5 bg-white">
+                            {config.menu.map((item) => {
+                                const isExternal = item.url?.startsWith('http://') || item.url?.startsWith('https://');
+                                if (isExternal) {
+                                    return (
+                                        <a
+                                            key={item.id}
+                                            href={item.url}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="px-2.5 py-1 text-xs font-semibold text-slate-600 hover:text-primary whitespace-nowrap rounded-md hover:bg-slate-50 transition-colors"
+                                        >
+                                            {item.label}
+                                        </a>
+                                    );
+                                }
+                                return (
+                                    <NavLink
+                                        key={item.id}
+                                        to={item.url}
+                                        className={({ isActive }) => `px-2.5 py-1 text-xs font-semibold whitespace-nowrap rounded-md transition-colors ${
+                                            isActive
+                                                ? 'text-primary bg-blue-50 border-b-2 border-primary'
+                                                : 'text-slate-600 hover:text-primary hover:bg-slate-50'
+                                        }`}
+                                    >
+                                        {item.label}
+                                    </NavLink>
+                                );
+                            })}
+                        </div>
+                    )}
                 </header>
             </>
         );
@@ -184,15 +222,31 @@ const Header = () => {
                 {/* Row 2: Navigation & Search */}
                 <div className="flex flex-wrap items-center justify-between px-3 md:px-6 py-2 gap-2 bg-white">
                     <nav className="flex items-center gap-1 md:gap-6 overflow-x-auto no-scrollbar mask-image-linear-to-r w-full md:w-auto">
-                        {config?.menu && config.menu.map((item) => (
-                            <NavLink
-                                key={item.id}
-                                to={item.url}
-                                className={({ isActive }) => `px-3 py-1.5 text-sm md:text-base font-semibold transition-colors duration-200 whitespace-nowrap ${isActive ? 'text-primary border-b-2 border-primary' : 'text-slate-500 hover:text-primary'} `}
-                            >
-                                {item.label}
-                            </NavLink>
-                        ))}
+                        {config?.menu && config.menu.map((item) => {
+                            const isExternal = item.url?.startsWith('http://') || item.url?.startsWith('https://');
+                            if (isExternal) {
+                                return (
+                                    <a
+                                        key={item.id}
+                                        href={item.url}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="px-3 py-1.5 text-sm md:text-base font-semibold text-slate-500 hover:text-primary transition-colors duration-200 whitespace-nowrap"
+                                    >
+                                        {item.label}
+                                    </a>
+                                );
+                            }
+                            return (
+                                <NavLink
+                                    key={item.id}
+                                    to={item.url}
+                                    className={({ isActive }) => `px-3 py-1.5 text-sm md:text-base font-semibold transition-colors duration-200 whitespace-nowrap ${isActive ? 'text-primary border-b-2 border-primary' : 'text-slate-500 hover:text-primary'} `}
+                                >
+                                    {item.label}
+                                </NavLink>
+                            );
+                        })}
                     </nav>
 
                     <div className="flex-grow md:flex-grow-0 w-full md:w-auto min-w-[200px] md:min-w-0 flex items-center justify-end gap-2">

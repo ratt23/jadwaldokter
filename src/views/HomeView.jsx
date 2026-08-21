@@ -7,7 +7,6 @@ import { parseDateFromString, formatDisplayDate, formatLeaveDates } from '../uti
 import DoctorCard from '../components/DoctorCard';
 import SpecialtySelectorModal from '../components/SpecialtySelectorModal';
 import DateSelectorModal from '../components/DateSelectorModal';
-import NotificationSection from '../components/NotificationSection';
 import AdDisplay from '../components/AdDisplay';
 import { Search, Calendar, Stethoscope, SlidersHorizontal, X, Phone, Smartphone } from 'lucide-react';
 import PingPongText from '../components/PingPongText';
@@ -715,13 +714,6 @@ const HomeView = () => {
                     </div>
                 </div>
             </div>
-
-            {/* Notification Section (Only show when not searching) */}
-            {!searchQuery && (
-                <div className="max-w-4xl mx-auto px-5 mb-4">
-                    <NotificationSection doctorsData={doctorsData} leaveData={leaveData} />
-                </div>
-            )}
 
             {/* Doctors Available List Section */}
             <div className="max-w-4xl mx-auto px-5">

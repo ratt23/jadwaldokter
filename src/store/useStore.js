@@ -121,7 +121,7 @@ export const useStore = create((set, get) => ({
     const hospitalAddress = data.hospital_address?.value || config.hospitalAddress;
     const hospitalEmail = data.hospital_email?.value || config.hospitalEmail;
     const headerSlides = safeParse(data.header_slides?.value, []);
-    const menu = safeParse(data.menu?.value, []);
+    const menu = safeParse(data.site_menu?.value || data.menu?.value, []);
     const doctorPriority = safeParse(data.doctor_priority?.value, {});
     const whatsappNumber = data.whatsapp_number?.value || config.whatsappNumber;
     const whatsappEnabled = data.whatsapp_enabled?.is_enabled ?? true;
