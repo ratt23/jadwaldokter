@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Calendar, Clock, Stethoscope } from 'lucide-react';
 import { trackEvent } from './AnalyticsTracker';
 import { useConfig } from '../context/ConfigContext';
@@ -24,6 +24,12 @@ const DoctorCard = ({ doctor, specialtyTitle, leaveStatus, selectedDate, isPopup
     const primaryImg = doctor?.image_url ? getProxiedImageUrl(doctor.image_url) : getDoctorLocalPhoto(doctor?.name);
     const [currentImg, setCurrentImg] = useState(primaryImg);
     const [hasError, setHasError] = useState(!primaryImg);
+
+    useEffect(() => {
+        const nextImg = doctor?.image_url ? getProxiedImageUrl(doctor.image_url) : getDoctorLocalPhoto(doctor?.name);
+        setCurrentImg(nextImg);
+        setHasError(!nextImg);
+    }, [doctor?.image_url, doctor?.name]);
 
     const handleImgError = () => {
         const localPhoto = getDoctorLocalPhoto(doctor?.name);

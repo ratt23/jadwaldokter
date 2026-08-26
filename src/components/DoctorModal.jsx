@@ -89,7 +89,7 @@ const DoctorModal = ({ specialtyKey, specialtyData, leaveData, onClose }) => {
                             const leaveStatus = getDoctorLeaveStatus(doctor.name, leaveData);
                             return (
                                 <DoctorCard
-                                    key={idx}
+                                    key={doctor.id ? `modal-doc-${doctor.id}` : `modal-doc-${doctor.name}-${idx}`}
                                     doctor={doctor}
                                     specialtyTitle={specialtyData.title}
                                     leaveStatus={leaveStatus}

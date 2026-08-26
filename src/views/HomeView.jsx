@@ -674,7 +674,7 @@ const HomeView = () => {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {filteredDoctors.map((doc, idx) => (
                             <DoctorCard
-                                key={idx}
+                                key={doc.id ? `doc-${doc.id}` : `doc-name-${doc.name}-${idx}`}
                                 doctor={doc}
                                 specialtyTitle={doc.specialtyTitle}
                                 leaveStatus={doc.leaveStatus}
@@ -822,7 +822,7 @@ const UpdateDoctorsModal = ({ isOpen, onClose, data, onSelectDoctor }) => {
                 <div className="p-5 overflow-y-auto space-y-3.5">
                     {data.map((doc, idx) => (
                         <DoctorCard
-                            key={idx}
+                            key={doc.doctor?.id ? `update-doc-${doc.doctor.id}` : `update-doc-${doc.name}-${idx}`}
                             doctor={doc.doctor}
                             specialtyTitle={doc.specialty}
                             leaveStatus={doc.leaveStatus}
