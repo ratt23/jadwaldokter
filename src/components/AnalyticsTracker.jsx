@@ -2,14 +2,29 @@ import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { getApiBaseUrl } from '../utils/apiConfig';
 
+export const getVisitorId = () => {
+    try {
+        let vid = localStorage.getItem('shab_vid');
+        if (!vid) {
+            vid = 'v_' + Math.random().toString(36).substring(2, 11) + Date.now().toString(36);
+            localStorage.setItem('shab_vid', vid);
+        }
+        return vid;
+    } catch (_) {
+        return 'v_' + Date.now().toString(36);
+    }
+};
+
 export const trackEvent = async (eventName, eventData = {}) => {
     try {
+        const visitorId = getVisitorId();
         await fetch(`${getApiBaseUrl()}/analytics?action=track`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 event_type: 'event',
                 event_name: eventName,
+                visitorId,
                 ...eventData
             })
         });
@@ -32,6 +47,8 @@ export default function AnalyticsTracker() {
                 if (isNewVisitor) {
                     localStorage.setItem('last_visit_date', now);
                 }
+
+                const visitorId = getVisitorId();
 
                 // Get API Base URL
                 const apiBase = getApiBaseUrl();
@@ -58,6 +75,7 @@ export default function AnalyticsTracker() {
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         isNewVisitor,
+                        visitorId,
                         path: location.pathname,
                         device,
                         browser,
@@ -67,7 +85,6 @@ export default function AnalyticsTracker() {
                 });
             } catch (err) {
                 // Silent fail for analytics
-                // console.error("Tracking Error", err);
             }
         };
 
