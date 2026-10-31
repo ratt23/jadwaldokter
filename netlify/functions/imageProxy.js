@@ -1,5 +1,5 @@
-exports.handler = async (event) => {
-    const imageUrl = event.queryStringParameters.url;
+export async function handler(event) {
+    const imageUrl = event.queryStringParameters?.url;
 
     if (!imageUrl) {
         return {
@@ -29,4 +29,4 @@ exports.handler = async (event) => {
             body: JSON.stringify({ error: 'Failed to fetch image', details: error.message })
         };
     }
-};
+}

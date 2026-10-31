@@ -1,12 +1,12 @@
 // Netlify Function to generate sitemap.xml dynamically
 // Uses native fetch API (Node 18+)
 
-exports.handler = async (event, context) => {
+export async function handler(event, context) {
     try {
         // Use production domain
         const baseUrl = 'https://shab.web.id';
         const currentDate = new Date().toISOString();
-        const apiBase = process.env.VITE_API_BASE_URL || 'https://dashdev2.netlify.app/.netlify/functions/api';
+        const apiBase = process.env.VITE_API_BASE_URL || 'https://graphicat.site/api';
 
         let xml = '<?xml version="1.0" encoding="UTF-8"?>\n';
         xml += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">\n';
@@ -31,9 +31,6 @@ exports.handler = async (event, context) => {
 
         // 1. Fetch Articles
         try {
-            // Note: dashdev2/api endpoints usually return { posts: [...] } or array
-            // Adjust endpoint path if necessary. Based on local usage it's /posts
-            // But apiConfig says base is .../api, so it's .../api/posts
             const response = await fetch(`${apiBase}/posts?status=published`);
 
             if (response.ok) {
@@ -108,4 +105,4 @@ exports.handler = async (event, context) => {
             body: '<?xml version="1.0" encoding="UTF-8"?><error>Failed to generate sitemap</error>'
         };
     }
-};
+}
