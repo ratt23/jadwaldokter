@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import AdDisplay from '../components/AdDisplay';
 
 import { useConfig } from '../context/ConfigContext';
+import { getApiBaseUrl } from '../utils/apiConfig';
 
 const ArticleDetailView = () => {
     const { slug } = useParams();
@@ -15,7 +16,7 @@ const ArticleDetailView = () => {
     useEffect(() => {
         const fetchArticleDetail = async () => {
             try {
-                const apiBase = import.meta.env.VITE_API_BASE_URL || '/.netlify/functions';
+                const apiBase = getApiBaseUrl();
                 const response = await fetch(`${apiBase}/posts?slug=${slug}`);
                 if (!response.ok) {
                     throw new Error('Failed to fetch article');

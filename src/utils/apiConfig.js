@@ -12,20 +12,20 @@ const API_SERVERS = {
  * Explicitly blocks and ignores any dead/legacy 'dashdev' references.
  */
 export function getApiBaseUrl() {
-    // 1. Check localStorage override (only if valid and not pointing to dead dashdev)
+    // 1. Check localStorage override (only if valid and not pointing to dead dashdev / netlify)
     try {
         const override = localStorage.getItem('api_server_override');
         if (override && API_SERVERS[override]) {
             return API_SERVERS[override];
         }
-        if (override && (override.includes('dashdev') || override.includes('localhost'))) {
+        if (override && (override.includes('dashdev') || override.includes('netlify') || override.includes('localhost'))) {
             localStorage.removeItem('api_server_override');
         }
     } catch (_) {}
 
-    // 2. Use environment variable ONLY if it is set and DOES NOT point to dead dashdev
+    // 2. Use environment variable ONLY if it is set and DOES NOT point to dead dashdev / netlify
     const envUrl = import.meta.env.VITE_API_BASE_URL;
-    if (envUrl && typeof envUrl === 'string' && !envUrl.includes('dashdev')) {
+    if (envUrl && typeof envUrl === 'string' && !envUrl.includes('dashdev') && !envUrl.includes('netlify.app')) {
         let clean = envUrl.trim();
         if (clean.endsWith('/')) clean = clean.slice(0, -1);
         return clean;
