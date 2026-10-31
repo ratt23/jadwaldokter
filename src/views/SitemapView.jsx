@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
+import { getApiBaseUrl } from '../utils/apiConfig';
 
 const SitemapRoute = () => {
     const location = useLocation();
@@ -10,11 +11,7 @@ const SitemapRoute = () => {
                 // Use production domain
                 const baseUrl = 'https://shab.web.id';
                 const currentDate = new Date().toISOString();
-
-                // Keep this consistent with sitemap.js
-                // In client-side, we might want to use the config, but let's hardcode to dashdev2 for consistency with the server function
-                // or use the environment variable if available.
-                const apiBase = import.meta.env.VITE_API_BASE_URL || 'https://dashdev2.netlify.app/.netlify/functions/api';
+                const apiBase = getApiBaseUrl();
 
                 let xml = '<?xml version="1.0" encoding="UTF-8"?>\n';
                 xml += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">\n';

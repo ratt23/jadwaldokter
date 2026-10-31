@@ -1,38 +1,43 @@
 // API Configuration with override support for white-label deployments
+const PRODUCTION_API = 'https://graphicat.site/api';
+
 const API_SERVERS = {
-    production: 'https://graphicat.site/api',
-    local: 'http://localhost:3001/api',
-    dashdev4: 'https://dashdev4.netlify.app/.netlify/functions/api',
-    dashdev3: 'https://dashdev3.netlify.app/.netlify/functions/api'
+    production: PRODUCTION_API,
+    local: 'http://localhost:3001/api'
 };
 
 /**
  * Get API base URL with override support
  * Priority: localStorage override > environment variable > production fallback
+ * Explicitly blocks and ignores any dead/legacy 'dashdev' references.
  */
 export function getApiBaseUrl() {
-    // Check localStorage override (for development/testing)
-    const override = localStorage.getItem('api_server_override');
-    if (override && API_SERVERS[override]) {
-        console.log(`🔄 Using API override: ${override}`);
-        return API_SERVERS[override];
-    }
+    // 1. Check localStorage override (only if valid and not pointing to dead dashdev)
+    try {
+        const override = localStorage.getItem('api_server_override');
+        if (override && API_SERVERS[override]) {
+            return API_SERVERS[override];
+        }
+        if (override && (override.includes('dashdev') || override.includes('localhost'))) {
+            localStorage.removeItem('api_server_override');
+        }
+    } catch (_) {}
 
-    // Use environment variable if specified
+    // 2. Use environment variable ONLY if it is set and DOES NOT point to dead dashdev
     const envUrl = import.meta.env.VITE_API_BASE_URL;
-    if (envUrl) {
+    if (envUrl && typeof envUrl === 'string' && !envUrl.includes('dashdev')) {
         let clean = envUrl.trim();
         if (clean.endsWith('/')) clean = clean.slice(0, -1);
         return clean;
     }
 
-    // Default: Production API on graphicat.site (connected to Neon PostgreSQL)
-    return API_SERVERS.production;
+    // 3. Guaranteed Production API on graphicat.site (connected directly to Neon PostgreSQL)
+    return PRODUCTION_API;
 }
 
 /**
  * Helper to switch API server (for development/testing)
- * @param {string} serverKey - 'production', 'local', 'dashdev4', 'dashdev3'
+ * @param {string} serverKey - 'production' or 'local'
  */
 export function setApiServer(serverKey) {
     if (API_SERVERS[serverKey]) {
@@ -61,9 +66,4 @@ if (import.meta.env.DEV) {
         current: getApiBaseUrl,
         available: Object.keys(API_SERVERS)
     };
-    console.log('💡 API Switcher available in console:');
-    console.log('   - apiConfig.switch("production") - Switch to graphicat.site');
-    console.log('   - apiConfig.switch("local") - Switch to localhost:3001');
-    console.log('   - apiConfig.clear() - Clear override');
-    console.log('   - apiConfig.current() - Show current API');
 }
