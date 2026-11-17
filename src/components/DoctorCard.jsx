@@ -172,16 +172,12 @@ const DoctorCard = ({ doctor, specialtyTitle, leaveStatus, selectedDate, isPopup
                 isOnLeave ? 'bg-slate-50/60 opacity-90' : ''
             }`}
         >
-            {/* Absolute Status Badge */}
-            <div className="absolute top-4 right-4 z-10">
-                {isOnLeave ? (
+            {/* Absolute Status Badge - Hanya muncul jika cuti */}
+            {isOnLeave && (
+                <div className="absolute top-4 right-4 z-10">
                     <span className="bg-red-50 text-red-600 text-[10px] font-extrabold px-2 py-0.5 rounded-full uppercase tracking-wider">Cuti</span>
-                ) : isPracticingToday ? (
-                    <span className="bg-green-50 text-green-700 text-[10px] font-extrabold px-2 py-0.5 rounded-full uppercase tracking-wider">Buka</span>
-                ) : (
-                    <span className="bg-slate-100 text-slate-500 text-[10px] font-extrabold px-2 py-0.5 rounded-full uppercase tracking-wider">Tutup</span>
-                )}
-            </div>
+                </div>
+            )}
 
             {/* Left Column: Avatar */}
             <div className="flex flex-col items-center flex-shrink-0">
