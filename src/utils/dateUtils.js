@@ -1,23 +1,39 @@
 export const formatDisplayDate = (dateString) => {
     if (!dateString) return 'Tanggal tidak tersedia';
 
-    // Handle ISO Timestamp (e.g. 2026-01-15T00:00:00.000Z)
-    let cleanDate = String(dateString);
-    if (cleanDate.includes('T')) {
-        cleanDate = cleanDate.split('T')[0];
+    const str = String(dateString).trim();
+    const monthNames = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+
+    // 1. Handle ISO Timestamp (e.g. 2026-11-12T17:00:00.000Z)
+    // Di Indonesia (WIB UTC+7 / WIT UTC+9 di Ambon), 17:00 UTC adalah pergantian hari berikutnya.
+    if (str.includes('T')) {
+        const dateObj = new Date(str);
+        if (!isNaN(dateObj.getTime())) {
+            try {
+                return dateObj.toLocaleDateString('id-ID', {
+                    timeZone: 'Asia/Jayapura',
+                    day: 'numeric',
+                    month: 'long',
+                    year: 'numeric'
+                });
+            } catch (e) {
+                const witTime = new Date(dateObj.getTime() + 9 * 3600000);
+                return `${witTime.getUTCDate()} ${monthNames[witTime.getUTCMonth()]} ${witTime.getUTCFullYear()}`;
+            }
+        }
     }
 
-    const monthNames = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
-    let parts = cleanDate.split('-');
+    // 2. Handle plain YYYY-MM-DD or DD-MM-YYYY
+    let parts = str.split('-');
     let dateObj;
 
     if (parts.length === 3) {
         if (parts[0].length === 4) {
             // YYYY-MM-DD
-            dateObj = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
+            dateObj = new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10));
         } else {
             // DD-MM-YYYY (Legacy)
-            dateObj = new Date(parseInt(parts[2]), parseInt(parts[1]) - 1, parseInt(parts[0]));
+            dateObj = new Date(parseInt(parts[2], 10), parseInt(parts[1], 10) - 1, parseInt(parts[0], 10));
         }
     } else {
         return dateString;
@@ -28,18 +44,49 @@ export const formatDisplayDate = (dateString) => {
 };
 
 export const parseDateFromString = (ds) => {
-    let cleanDate = String(ds);
-    if (cleanDate.includes('T')) {
-        cleanDate = cleanDate.split('T')[0];
-    }
-    const parts = cleanDate.split('-');
+    if (!ds) return new Date();
+    const str = String(ds).trim();
 
-    if (parts[0].length === 4) {
-        // YYYY-MM-DD
-        return new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
+    // If ISO with T, adjust for Indonesian timezone (Asia/Jayapura - WIT)
+    if (str.includes('T')) {
+        const d = new Date(str);
+        if (!isNaN(d.getTime())) {
+            try {
+                const formatter = new Intl.DateTimeFormat('en-CA', {
+                    timeZone: 'Asia/Jayapura',
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit'
+                });
+                const [y, m, day] = formatter.format(d).split('-').map(Number);
+                const localDate = new Date(y, m - 1, day);
+                localDate.setHours(0, 0, 0, 0);
+                return localDate;
+            } catch (e) {
+                const wit = new Date(d.getTime() + 9 * 3600000);
+                const localDate = new Date(wit.getUTCFullYear(), wit.getUTCMonth(), wit.getUTCDate());
+                localDate.setHours(0, 0, 0, 0);
+                return localDate;
+            }
+        }
     }
-    // Assume DD-MM-YYYY
-    return new Date(parseInt(parts[2]), parseInt(parts[1]) - 1, parseInt(parts[0]));
+
+    const parts = str.split('-');
+    let dateObj;
+    if (parts.length === 3) {
+        if (parts[0].length === 4) {
+            // YYYY-MM-DD
+            dateObj = new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10));
+        } else {
+            // DD-MM-YYYY
+            dateObj = new Date(parseInt(parts[2], 10), parseInt(parts[1], 10) - 1, parseInt(parts[0], 10));
+        }
+        dateObj.setHours(0, 0, 0, 0);
+        return dateObj;
+    }
+    const fallback = new Date(str);
+    fallback.setHours(0, 0, 0, 0);
+    return fallback;
 };
 
 export const getDoctorLeaveStatus = (doctorName, leaveData) => {
