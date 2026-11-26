@@ -14,10 +14,22 @@ const NotificationSection = ({ doctorsData, leaveData }) => {
 
     // --- Derived Data Logic ---
 
-    // 1. Doctors on Leave
+    // 1. Doctors on Leave (only active in today's period)
     const leaveDoctors = useMemo(() => {
         if (!leaveData || !leaveData.length) return [];
-        return leaveData.map(l => {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        return leaveData
+            .filter(l => {
+                const start = parseDateFromString(l.TanggalMulaiCuti);
+                const end = parseDateFromString(l.TanggalSelesaiCuti);
+                if (!start || !end || isNaN(start.getTime()) || isNaN(end.getTime())) return false;
+                start.setHours(0, 0, 0, 0);
+                end.setHours(0, 0, 0, 0);
+                return today >= start && today <= end;
+            })
+            .map(l => {
             let image = '/asset/logo/logo.png';
             // Find doctor image from doctorsData
             for (const key in doctorsData) {

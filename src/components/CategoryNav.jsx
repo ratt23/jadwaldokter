@@ -29,14 +29,16 @@ const CategoryNav = () => {
         fetchLeaves();
     }, []);
 
-    // Filter active leaves
+    // Filter active leaves (only active in today's period)
     const activeLeaves = leaveData.filter(leave => {
         const today = new Date();
         today.setHours(0, 0, 0, 0);
+        const start = new Date(leave.TanggalMulaiCuti);
         const end = new Date(leave.TanggalSelesaiCuti);
-        // Check if date is valid
-        if (isNaN(end.getTime())) return false;
-        return end >= today;
+        if (isNaN(start.getTime()) || isNaN(end.getTime())) return false;
+        start.setHours(0, 0, 0, 0);
+        end.setHours(0, 0, 0, 0);
+        return today >= start && today <= end;
     });
 
     const marqueeText = activeLeaves.length > 0
