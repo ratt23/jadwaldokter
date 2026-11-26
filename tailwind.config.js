@@ -7,7 +7,7 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        poppins: ['Poppins', 'sans-serif'],
+        poppins: ['"Plus Jakarta Sans"', 'sans-serif'],
         sans: ['"Plus Jakarta Sans"', 'sans-serif'],
       },
       colors: {

@@ -1,26 +1,32 @@
 import React from 'react';
+import { motion } from 'framer-motion';
 
 const TabNavigation = ({ tabs, activeTab, onTabChange }) => {
     return (
         <div className="mb-6 overflow-x-auto scrollbar-hide">
-            <div className="flex gap-2 min-w-max px-6 py-1">
-                {tabs.map((tab) => (
-                    <button
-                        key={tab.id}
-                        onClick={() => onTabChange(tab.id)}
-                        className={`
-              flex items-center gap-2 px-4 py-3 rounded-xl font-semibold text-sm
-              transition-all duration-300 whitespace-nowrap
-              ${activeTab === tab.id
-                                ? 'bg-gradient-to-r from-[#01007f] to-[#0c4a6e] text-white shadow-lg shadow-[#01007f]/30 scale-105'
-                                : 'bg-white text-slate-600 hover:bg-slate-50 hover:shadow-md border border-slate-200'
-                            }
-            `}
-                    >
-                        <span className="text-lg">{tab.icon}</span>
-                        <span>{tab.title}</span>
-                    </button>
-                ))}
+            <div className="inline-flex gap-1.5 min-w-max bg-slate-100/80 border border-black/[0.06] p-1.5 rounded-full mx-6">
+                {tabs.map((tab) => {
+                    const isActive = activeTab === tab.id;
+                    return (
+                        <button
+                            key={tab.id}
+                            onClick={() => onTabChange(tab.id)}
+                            className={`relative flex items-center gap-2 px-4 py-2 rounded-full font-semibold text-sm transition-colors duration-200 whitespace-nowrap ${
+                                isActive ? 'text-white' : 'text-slate-600 hover:text-slate-900'
+                            }`}
+                        >
+                            {isActive && (
+                                <motion.div
+                                    layoutId="siloamMcuTabPill"
+                                    className="absolute inset-0 bg-gradient-to-r from-[#01007f] to-[#0c4a6e] rounded-full shadow-md shadow-[#01007f]/25"
+                                    transition={{ type: 'spring', stiffness: 450, damping: 32 }}
+                                />
+                            )}
+                            <span className="relative z-10 text-base">{tab.icon}</span>
+                            <span className="relative z-10">{tab.title}</span>
+                        </button>
+                    );
+                })}
             </div>
         </div>
     );

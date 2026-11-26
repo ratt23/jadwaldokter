@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
 import { Calendar, Clock, Stethoscope } from 'lucide-react';
 import { trackEvent } from './AnalyticsTracker';
 import { useConfig } from '../context/ConfigContext';
@@ -161,22 +162,30 @@ const DoctorCard = ({ doctor, specialtyTitle, leaveStatus, selectedDate, isPopup
     }
 
     return (
-        <div
+        <motion.div
+            whileHover={!isPopup ? { y: -3 } : undefined}
+            whileTap={!isPopup ? { scale: 0.985 } : undefined}
+            transition={{ duration: 0.2 }}
             onClick={(e) => {
                 trackEvent(eventName, { doctor_name: cleanDoctorName, specialty: specialtyTitle });
                 if (onClick) onClick(e);
             }}
-            className={`flex items-start gap-4 bg-white p-4 sm:p-5 rounded-2xl border border-slate-100 shadow-xs transition-all duration-300 relative ${
-                !isPopup ? 'cursor-pointer hover:shadow-md hover:border-slate-200/50 active:scale-[0.99]' : ''
+            className={`flex items-start gap-4 bg-white p-4 sm:p-5 rounded-[22px] border border-black/[0.06] shadow-[0_2px_12px_rgba(1,0,127,0.03)] transition-shadow duration-200 relative ${
+                !isPopup ? 'cursor-pointer hover:shadow-[0_10px_28px_rgba(1,0,127,0.08)]' : ''
             } ${
-                isOnLeave ? 'bg-slate-50/60 opacity-90' : ''
+                isOnLeave ? 'bg-slate-50/70 opacity-90' : ''
             }`}
         >
-            {/* Absolute Status Badge - Hanya muncul jika cuti */}
+            {/* Absolute Status Badge - Hanya muncul jika cuti (Spring Stamp) */}
             {isOnLeave && (
-                <div className="absolute top-4 right-4 z-10">
-                    <span className="bg-red-50 text-red-600 text-[10px] font-extrabold px-2 py-0.5 rounded-full uppercase tracking-wider">Cuti</span>
-                </div>
+                <motion.div
+                    initial={{ scale: 1.5, rotate: -10, opacity: 0 }}
+                    animate={{ scale: 1, rotate: -3, opacity: 1 }}
+                    transition={{ type: 'spring', stiffness: 450, damping: 22 }}
+                    className="absolute top-4 right-4 z-10"
+                >
+                    <span className="inline-block bg-red-50 text-red-600 border border-red-200 text-[10px] font-extrabold px-2.5 py-0.5 rounded-full uppercase tracking-wider">Cuti</span>
+                </motion.div>
             )}
 
             {/* Left Column: Avatar */}
@@ -221,7 +230,7 @@ const DoctorCard = ({ doctor, specialtyTitle, leaveStatus, selectedDate, isPopup
                             </div>
 
                             {/* Clock Row */}
-                            <div className="flex items-center gap-2 mt-1.5 text-xs md:text-sm text-slate-600 font-sans font-semibold">
+                            <div className="flex items-center gap-2 mt-1.5 text-xs md:text-sm text-slate-600 font-sans font-semibold tabular-nums">
                                 <Clock className="h-4 w-4 text-[#01007f]/80 flex-shrink-0" />
                                 <span className="leading-none">{hasPracticingHours ? scheduleTime : 'Tidak ada praktik'}</span>
                             </div>
@@ -239,7 +248,7 @@ const DoctorCard = ({ doctor, specialtyTitle, leaveStatus, selectedDate, isPopup
                                     scheduleRows.map((row, idx) => (
                                         <div key={idx} className="flex items-center gap-2 border-b border-slate-50 pb-1 last:border-none last:pb-0">
                                             <span className="w-14 text-slate-400 font-extrabold uppercase text-[9px]">{row.day}</span>
-                                            <span className="text-slate-700">{row.time}</span>
+                                            <span className="text-slate-700 tabular-nums">{row.time}</span>
                                         </div>
                                     ))
                                 ) : (
@@ -293,7 +302,7 @@ const DoctorCard = ({ doctor, specialtyTitle, leaveStatus, selectedDate, isPopup
                     </>
                 )}
             </div>
-        </div>
+        </motion.div>
     );
 };
 

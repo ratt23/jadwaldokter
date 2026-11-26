@@ -1,5 +1,6 @@
 import React from 'react';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { useSearchContext } from '../context/SearchContext';
 import { Search } from 'lucide-react';
 import IOSInstallPrompt from './IOSInstallPrompt';
@@ -122,7 +123,7 @@ const Header = () => {
         return (
             <>
                 <IOSInstallPrompt isOpen={showIOSPrompt} onClose={() => setShowIOSPrompt(false)} />
-                <header className="bg-white border-b border-slate-100 sticky top-0 z-50 shadow-sm">
+                <header className="bg-white/95 backdrop-blur-md border border-black/[0.06] rounded-[20px] mx-3 mt-2.5 mb-2.5 sticky top-2.5 z-50 shadow-[0_8px_24px_rgba(1,0,127,0.06)] overflow-hidden">
                     {/* Row 1: Brand & Clock */}
                     <div className="px-4 py-2.5 flex items-center justify-between gap-3">
                         {/* Brand Logo */}
@@ -153,11 +154,12 @@ const Header = () => {
                         </div>
                     </div>
 
-                    {/* Row 2: Mobile Navigation Menu Bar (Dynamic from Site Menu Manager) */}
+                    {/* Row 2: Mobile Navigation Menu Bar (Editorial Pill Bar) */}
                     {config?.menu && config.menu.length > 0 && (
-                        <div className="border-t border-slate-100 px-3 py-1.5 overflow-x-auto no-scrollbar flex items-center gap-1.5 bg-white">
+                        <div className="border-t border-black/[0.05] px-3 py-2 overflow-x-auto no-scrollbar flex items-center gap-1.5 bg-slate-50/70">
                             {config.menu.map((item) => {
                                 const isExternal = item.url?.startsWith('http://') || item.url?.startsWith('https://');
+                                const isActive = !isExternal && (location.pathname === item.url || (item.url === '/home' && location.pathname.startsWith('/jadwal-dokter')));
                                 if (isExternal) {
                                     return (
                                         <a
@@ -165,7 +167,7 @@ const Header = () => {
                                             href={item.url}
                                             target="_blank"
                                             rel="noopener noreferrer"
-                                            className="px-2.5 py-1 text-xs font-semibold text-slate-600 hover:text-primary whitespace-nowrap rounded-md hover:bg-slate-50 transition-colors"
+                                            className="px-3.5 py-1.5 text-xs font-semibold text-slate-600 hover:text-[#01007f] whitespace-nowrap rounded-full hover:bg-white transition-colors"
                                         >
                                             {item.label}
                                         </a>
@@ -175,13 +177,20 @@ const Header = () => {
                                     <NavLink
                                         key={item.id}
                                         to={item.url}
-                                        className={({ isActive }) => `px-2.5 py-1 text-xs font-semibold whitespace-nowrap rounded-md transition-colors ${
+                                        className={`relative px-3.5 py-1.5 text-xs font-bold whitespace-nowrap rounded-full transition-colors ${
                                             isActive
-                                                ? 'text-primary bg-blue-50 border-b-2 border-primary'
-                                                : 'text-slate-600 hover:text-primary hover:bg-slate-50'
+                                                ? 'text-white'
+                                                : 'text-slate-600 hover:text-[#01007f]'
                                         }`}
                                     >
-                                        {item.label}
+                                        {isActive && (
+                                            <motion.div
+                                                layoutId="siloamMobileHeaderPill"
+                                                className="absolute inset-0 bg-[#01007f] rounded-full shadow-xs"
+                                                transition={{ type: 'spring', stiffness: 450, damping: 32 }}
+                                            />
+                                        )}
+                                        <span className="relative z-10">{item.label}</span>
                                     </NavLink>
                                 );
                             })}
@@ -195,35 +204,36 @@ const Header = () => {
     return (
         <>
             <IOSInstallPrompt isOpen={showIOSPrompt} onClose={() => setShowIOSPrompt(false)} />
-            <header className="bg-white shadow-md sticky top-0 z-50">
-                {/* Row 1: Brand & Info (Existing) */}
-                <div className="flex items-center justify-between gap-3 md:gap-4 p-3 md:p-6 pb-2 md:pb-4 border-b border-slate-50">
+            <header className="bg-white/95 backdrop-blur-md shadow-[0_8px_28px_rgba(1,0,127,0.06)] border border-black/[0.06] rounded-[22px] mx-4 md:mx-6 mt-3 mb-3 sticky top-3 z-50 overflow-hidden">
+                {/* Row 1: Brand & Info */}
+                <div className="flex items-center justify-between gap-3 md:gap-4 px-5 py-3.5 border-b border-black/[0.05]">
                     <div className="flex-shrink-0 w-[40%] max-w-[100px] md:w-auto md:max-w-none cursor-pointer" onClick={() => navigate('/home')}>
                         {config?.logoUrl ? (
-                            <img src={config.logoUrl} alt={`Logo ${config?.hospitalShortName || 'Healthcare'} `} className="w-full h-auto md:h-14 md:w-auto" />
+                            <img src={config.logoUrl} alt={`Logo ${config?.hospitalShortName || 'Healthcare'} `} className="w-full h-auto md:h-12 md:w-auto" />
                         ) : (
-                            <img src="/asset/logo/logo.png" alt={`Logo ${config?.hospitalShortName || 'Healthcare'} `} className="w-full h-auto md:h-14 md:w-auto" />
+                            <img src="/asset/logo/logo.png" alt={`Logo ${config?.hospitalShortName || 'Healthcare'} `} className="w-full h-auto md:h-12 md:w-auto" />
                         )}
                     </div>
 
                     {/* Desktop Clock & Date Display */}
-                    <div className="h-10 md:h-14 flex-grow flex items-center justify-end pr-1">
+                    <div className="h-10 md:h-12 flex-grow flex items-center justify-end pr-1">
                         <div className="flex flex-col items-end justify-center text-right leading-none">
                             <div className="text-xl md:text-2xl font-black text-[#01007f] font-mono tracking-wider tabular-nums leading-none">
                                 {formattedHeaderTime}
                             </div>
-                            <div className="text-[10px] md:text-xs font-extrabold text-slate-500 font-sans tracking-wide mt-1.5 md:mt-2 uppercase leading-none">
+                            <div className="text-[10px] md:text-xs font-extrabold text-slate-500 font-sans tracking-wide mt-1.5 uppercase leading-none">
                                 {formattedHeaderDate}
                             </div>
                         </div>
                     </div>
                 </div>
 
-                {/* Row 2: Navigation & Search */}
-                <div className="flex flex-wrap items-center justify-between px-3 md:px-6 py-2 gap-2 bg-white">
-                    <nav className="flex items-center gap-1 md:gap-6 overflow-x-auto no-scrollbar mask-image-linear-to-r w-full md:w-auto">
+                {/* Row 2: Editorial Pill Navigation & Search */}
+                <div className="flex flex-wrap items-center justify-between px-4 md:px-5 py-2.5 gap-2 bg-slate-50/60">
+                    <nav className="inline-flex items-center gap-1 bg-white border border-black/[0.06] p-1 rounded-full overflow-x-auto no-scrollbar max-w-full">
                         {config?.menu && config.menu.map((item) => {
                             const isExternal = item.url?.startsWith('http://') || item.url?.startsWith('https://');
+                            const isActive = !isExternal && (location.pathname === item.url || (item.url === '/home' && location.pathname.startsWith('/jadwal-dokter')));
                             if (isExternal) {
                                 return (
                                     <a
@@ -231,7 +241,7 @@ const Header = () => {
                                         href={item.url}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="px-3 py-1.5 text-sm md:text-base font-semibold text-slate-500 hover:text-primary transition-colors duration-200 whitespace-nowrap"
+                                        className="px-4 py-1.5 text-xs md:text-sm font-semibold text-slate-600 hover:text-[#01007f] rounded-full transition-colors duration-200 whitespace-nowrap"
                                     >
                                         {item.label}
                                     </a>
@@ -241,9 +251,18 @@ const Header = () => {
                                 <NavLink
                                     key={item.id}
                                     to={item.url}
-                                    className={({ isActive }) => `px-3 py-1.5 text-sm md:text-base font-semibold transition-colors duration-200 whitespace-nowrap ${isActive ? 'text-primary border-b-2 border-primary' : 'text-slate-500 hover:text-primary'} `}
+                                    className={`relative px-4 py-1.5 text-xs md:text-sm font-bold rounded-full transition-colors duration-200 whitespace-nowrap ${
+                                        isActive ? 'text-white' : 'text-slate-600 hover:text-[#01007f]'
+                                    }`}
                                 >
-                                    {item.label}
+                                    {isActive && (
+                                        <motion.div
+                                            layoutId="siloamDesktopHeaderPill"
+                                            className="absolute inset-0 bg-[#01007f] rounded-full shadow-xs"
+                                            transition={{ type: 'spring', stiffness: 450, damping: 32 }}
+                                        />
+                                    )}
+                                    <span className="relative z-10">{item.label}</span>
                                 </NavLink>
                             );
                         })}

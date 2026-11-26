@@ -37,7 +37,7 @@ const SpecialtySelectorModal = ({ isOpen, onClose, doctorsData, onSelectSpecialt
             onClick={handleClose}
         >
             <div 
-                className={`bg-white w-full sm:max-w-md rounded-t-3xl sm:rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[85vh] sm:max-h-[90vh] transition-transform duration-300 ${visible ? 'translate-y-0 sm:scale-100' : 'translate-y-full sm:scale-95'}`}
+                className={`bg-white w-full sm:max-w-md rounded-t-[24px] sm:rounded-[24px] border border-black/[0.06] shadow-2xl overflow-hidden flex flex-col max-h-[85vh] sm:max-h-[90vh] transition-transform duration-300 ${visible ? 'translate-y-0 sm:scale-100' : 'translate-y-full sm:scale-95'}`}
                 onClick={(e) => e.stopPropagation()}
             >
                 {/* Header */}

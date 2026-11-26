@@ -1,5 +1,6 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { useConfig } from '../context/ConfigContext';
 import { useDoctorData } from '../hooks/useDoctorData';
 import { useSearchContext } from '../context/SearchContext';
@@ -457,16 +458,25 @@ const HomeView = () => {
             `}</style>
             <h1 className="sr-only">Jadwal Praktik Dokter Spesialis {config.hospitalName || 'RSU Siloam Ambon'}</h1>
 
-            {/* Dashboard Header Block */}
-            <div className="max-w-4xl mx-auto px-3 sm:px-5 mb-6">
-                <div className="bg-gradient-to-br from-blue-100/75 to-indigo-100/45 p-3.5 sm:p-5 rounded-3xl border border-blue-200 shadow-xs">
+            {/* Editorial Navy Hero Block (Warna Tetap Siloam Navy & White) */}
+            <div className="max-w-4xl mx-auto px-3 sm:px-5 mb-6 space-y-4">
+                <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.25 }}
+                    className="bg-[#01007f] text-white p-5 sm:p-6 rounded-[24px] border border-white/10 shadow-[0_14px_36px_rgba(1,0,127,0.16)]"
+                >
                     <div className="flex justify-between items-center gap-2 sm:gap-4">
                         <div className="flex-shrink-0">
-                            <h2 className="text-[17px] sm:text-2xl md:text-3xl font-extrabold text-[#01007f] tracking-tight font-sans whitespace-nowrap">
+                            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/15 text-[10px] font-bold uppercase tracking-[0.14em] text-blue-100 mb-1.5">
+                                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                                RSU Siloam Ambon
+                            </span>
+                            <h2 className="text-[19px] sm:text-2xl md:text-3xl font-extrabold text-white tracking-tight font-sans whitespace-nowrap">
                                 Jadwal Poliklinik
                             </h2>
-                            <p className="text-[10px] sm:text-xs md:text-sm text-slate-500 font-semibold mt-0.5 font-sans whitespace-nowrap">
-                                RSU Siloam Ambon - {formattedToday}
+                            <p className="text-[11px] sm:text-xs md:text-sm text-blue-100/80 font-medium mt-0.5 font-sans whitespace-nowrap">
+                                {formattedToday}
                             </p>
                         </div>
 
@@ -479,7 +489,7 @@ const HomeView = () => {
                             {/* 1. MySiloam App Download CTA */}
                             <button
                                 onClick={handleDownloadMySiloam}
-                                className={`absolute right-0 top-0 h-10 rounded-full flex items-center bg-white border border-blue-200 text-[#01007f] shadow-xs hover:shadow-sm active:scale-95 transition-all duration-500 ease-in-out overflow-hidden w-10 ${
+                                className={`absolute right-0 top-0 h-10 rounded-full flex items-center bg-white border border-white/20 text-[#01007f] shadow-md hover:shadow-lg active:scale-95 transition-all duration-500 ease-in-out overflow-hidden w-10 ${
                                     activeCtaIdx === 0 
                                         ? 'opacity-100 translate-x-0 pointer-events-auto' 
                                         : 'opacity-0 translate-x-4 pointer-events-none'
@@ -541,44 +551,71 @@ const HomeView = () => {
                         </div>
                     </div>
 
-                    {/* Glowing Static Border Search Container */}
-                    <div className="relative mt-5 p-[1.5px] rounded-2xl overflow-hidden bg-[#2563eb]/20 flex items-center shadow-xs focus-within:shadow-md focus-within:shadow-blue-100 transition-all duration-300">
-                        {/* Static Gradient Background */}
-                        <div className="absolute inset-0 bg-gradient-to-r from-[#2563eb] to-[#60a5fa]"></div>
-                        
-                        {/* Inner Container holding the actual input */}
-                        <div className="relative w-full flex items-center bg-white rounded-[14.5px] overflow-hidden">
-                            <input
-                                type="text"
-                                placeholder="Cari nama dokter / spesialis..."
-                                value={searchQuery}
-                                onChange={(e) => setSearchQuery(e.target.value)}
-                                className={`w-full pl-5 py-3.5 bg-transparent border-none text-sm focus:outline-none placeholder:text-slate-400 font-sans font-medium text-slate-700 ${
-                                    searchQuery ? 'pr-[88px]' : 'pr-14'
-                                }`}
-                            />
-                            {searchQuery && (
-                                <button
-                                    onClick={() => setSearchQuery('')}
-                                    className="absolute right-12 p-2 hover:bg-slate-100 text-slate-400 hover:text-slate-600 rounded-xl transition-all duration-200"
-                                    aria-label="Bersihkan pencarian"
-                                    type="button"
-                                >
-                                    <X className="h-5 w-5 stroke-[2.5]" />
-                                </button>
-                            )}
-                            <button 
-                                className="absolute right-2.5 p-2 bg-[#01007f]/5 hover:bg-[#01007f]/10 text-[#01007f] rounded-xl transition-colors"
-                                aria-label="Cari"
+                    {/* Clean Pill Search Input */}
+                    <div className="relative mt-5 flex items-center bg-white rounded-full shadow-md overflow-hidden border border-white/20">
+                        <input
+                            type="text"
+                            placeholder="Cari nama dokter / spesialis..."
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            className={`w-full pl-5 py-3.5 bg-transparent border-none text-sm focus:outline-none placeholder:text-slate-400 font-sans font-medium text-slate-800 ${
+                                searchQuery ? 'pr-[88px]' : 'pr-14'
+                            }`}
+                        />
+                        {searchQuery && (
+                            <button
+                                onClick={() => setSearchQuery('')}
+                                className="absolute right-12 p-2 hover:bg-slate-100 text-slate-400 hover:text-slate-600 rounded-full transition-all duration-200"
+                                aria-label="Bersihkan pencarian"
+                                type="button"
                             >
-                                <Search className="h-5 w-5 stroke-[2.5]" />
+                                <X className="h-5 w-5 stroke-[2.5]" />
                             </button>
-                        </div>
+                        )}
+                        <button 
+                            className="absolute right-2 p-2.5 bg-[#01007f] hover:bg-[#010099] text-white rounded-full transition-colors"
+                            aria-label="Cari"
+                        >
+                            <Search className="h-4 w-4 stroke-[2.5]" />
+                        </button>
                     </div>
+                </motion.div>
 
-                    {/* Banners Grid Container */}
-                    <div className={`mt-3.5 grid grid-cols-1 ${updatedDoctors.length > 0 ? 'sm:grid-cols-2' : 'grid-cols-1'} gap-2`}>
-                        {/* Sliding Banner for Doctor Updates */}
+                {/* Editorial KPI Strip (Tabular Nums) */}
+                <div className="grid grid-cols-3 gap-2.5 sm:gap-3">
+                    <div className="bg-white rounded-[20px] p-3.5 border border-black/[0.06] shadow-xs">
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">Dokter Tampil</span>
+                        <span className="text-xl sm:text-2xl font-extrabold text-[#01007f] tabular-nums mt-0.5 block">
+                            {filteredDoctors.length}
+                        </span>
+                    </div>
+                    <div className="bg-white rounded-[20px] p-3.5 border border-black/[0.06] shadow-xs">
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">Poliklinik</span>
+                        <span className="text-xl sm:text-2xl font-extrabold text-slate-800 tabular-nums mt-0.5 block">
+                            {Object.keys(doctorsData || {}).length}
+                        </span>
+                    </div>
+                    <button
+                        type="button"
+                        onClick={() => processedLeaveList.length > 0 && setIsLeaveModalOpen(true)}
+                        className={`text-left rounded-[20px] p-3.5 border transition-colors shadow-xs ${
+                            processedLeaveList.length > 0
+                                ? 'bg-red-50/70 border-red-200/70 hover:bg-red-50'
+                                : 'bg-white border-black/[0.06]'
+                        }`}
+                    >
+                        <span className={`text-[10px] font-bold uppercase tracking-wider block ${processedLeaveList.length > 0 ? 'text-red-500' : 'text-slate-400'}`}>
+                            Sedang Cuti
+                        </span>
+                        <span className={`text-xl sm:text-2xl font-extrabold tabular-nums mt-0.5 block ${processedLeaveList.length > 0 ? 'text-red-600' : 'text-slate-800'}`}>
+                            {processedLeaveList.length}
+                        </span>
+                    </button>
+                </div>
+
+                {/* Banners Grid Container */}
+                {(updatedDoctors.length > 0 || processedLeaveList.length > 0) && (
+                    <div className={`grid grid-cols-1 ${updatedDoctors.length > 0 ? 'sm:grid-cols-2' : 'grid-cols-1'} gap-2.5`}>
                         {updatedDoctors.length > 0 && (
                             <DoctorTickerBanner
                                 items={updatedDoctors}
@@ -593,7 +630,6 @@ const HomeView = () => {
                             />
                         )}
 
-                        {/* Sliding Banner for Doctors on Leave */}
                         {processedLeaveList.length > 0 && (
                             <DoctorTickerBanner
                                 items={processedLeaveList}
@@ -608,54 +644,52 @@ const HomeView = () => {
                             />
                         )}
                     </div>
+                )}
 
-                    {/* Filter Buttons */}
-                    <div className="grid grid-cols-2 gap-3 mt-4">
-                        {/* Specialty Selector Button */}
-                        <button
-                            onClick={() => setIsSpecialtyModalOpen(true)}
-                            className={`flex items-center gap-2 px-4 py-3 bg-white border border-slate-100 rounded-2xl text-left shadow-xs hover:shadow-sm active:scale-98 transition-all duration-200 ${
-                                selectedSpecialtyKey ? 'ring-1.5 ring-[#01007f] border-[#01007f]' : ''
-                            }`}
-                        >
-                            <Stethoscope className="h-4.5 w-4.5 text-blue-600 flex-shrink-0" />
-                            <div className="flex-1 min-w-0 pr-1">
-                                <p className="text-[10px] text-slate-400 font-bold tracking-wide uppercase leading-none font-sans">
-                                    Spesialisasi
-                                </p>
-                                <p className="text-xs font-extrabold text-slate-700 mt-1 truncate leading-tight font-sans">
-                                    {selectedSpecialtyData ? selectedSpecialtyData.title : 'Pilih Spesialis'}
-                                </p>
+                {/* Filter Selector Cards */}
+                <div className="grid grid-cols-2 gap-3">
+                    <button
+                        onClick={() => setIsSpecialtyModalOpen(true)}
+                        className={`flex items-center gap-2.5 px-4 py-3.5 bg-white border border-black/[0.06] rounded-[20px] text-left shadow-xs hover:shadow-sm active:scale-[0.98] transition-all duration-200 ${
+                            selectedSpecialtyKey ? 'ring-2 ring-[#01007f] border-[#01007f]' : ''
+                        }`}
+                    >
+                        <Stethoscope className="h-5 w-5 text-[#01007f] flex-shrink-0" />
+                        <div className="flex-1 min-w-0 pr-1">
+                            <p className="text-[10px] text-slate-400 font-bold tracking-wider uppercase leading-none font-sans">
+                                Spesialisasi
+                            </p>
+                            <p className="text-xs font-extrabold text-slate-800 mt-1 truncate leading-tight font-sans">
+                                {selectedSpecialtyData ? selectedSpecialtyData.title : 'Pilih Spesialis'}
+                            </p>
+                        </div>
+                        {selectedSpecialtyKey ? (
+                            <div 
+                                onClick={handleClearSpecialty}
+                                className="p-1 rounded-full bg-slate-100 text-slate-400 hover:text-slate-600 hover:bg-slate-200 transition-colors"
+                            >
+                                <X className="h-3 w-3 stroke-[2.5]" />
                             </div>
-                            {selectedSpecialtyKey ? (
-                                <div 
-                                    onClick={handleClearSpecialty}
-                                    className="p-0.5 rounded-full bg-slate-100 text-slate-400 hover:text-slate-600 hover:bg-slate-200 transition-colors"
-                                >
-                                    <X className="h-3 w-3 stroke-[2.5]" />
-                                </div>
-                            ) : (
-                                <div className="w-1.5 h-1.5 rounded-full bg-slate-300"></div>
-                            )}
-                        </button>
+                        ) : (
+                            <div className="w-2 h-2 rounded-full bg-slate-300"></div>
+                        )}
+                    </button>
 
-                        {/* Date Selector Button */}
-                        <button
-                            onClick={() => setIsDateModalOpen(true)}
-                            className="flex items-center gap-2 px-4 py-3 bg-white border border-slate-100 rounded-2xl text-left shadow-xs hover:shadow-sm active:scale-98 transition-all duration-200"
-                        >
-                            <Calendar className="h-4.5 w-4.5 text-blue-600 flex-shrink-0" />
-                            <div className="flex-1 min-w-0">
-                                <p className="text-[10px] text-slate-400 font-bold tracking-wide uppercase leading-none font-sans">
-                                    Tanggal
-                                </p>
-                                <p className="text-xs font-extrabold text-slate-700 mt-1 truncate leading-tight font-sans">
-                                    {activeDateLabel}
-                                </p>
-                            </div>
-                            <div className="w-1.5 h-1.5 rounded-full bg-slate-300"></div>
-                        </button>
-                    </div>
+                    <button
+                        onClick={() => setIsDateModalOpen(true)}
+                        className="flex items-center gap-2.5 px-4 py-3.5 bg-white border border-black/[0.06] rounded-[20px] text-left shadow-xs hover:shadow-sm active:scale-[0.98] transition-all duration-200"
+                    >
+                        <Calendar className="h-5 w-5 text-[#01007f] flex-shrink-0" />
+                        <div className="flex-1 min-w-0">
+                            <p className="text-[10px] text-slate-400 font-bold tracking-wider uppercase leading-none font-sans">
+                                Tanggal
+                            </p>
+                            <p className="text-xs font-extrabold text-slate-800 mt-1 truncate leading-tight font-sans">
+                                {activeDateLabel}
+                            </p>
+                        </div>
+                        <div className="w-2 h-2 rounded-full bg-slate-300"></div>
+                    </button>
                 </div>
             </div>
 

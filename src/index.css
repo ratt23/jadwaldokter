@@ -10,6 +10,10 @@ body {
     background-color: #f8fafc;
 }
 
+.tabular-nums {
+    font-variant-numeric: tabular-nums;
+}
+
 /* Custom Scrollbar for Webkit */
 ::-webkit-scrollbar {
     width: 6px;
